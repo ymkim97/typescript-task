@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "jest",
-    "start": "npx tsx src/server.ts"
+    "start-server": "npx tsx src/server.ts"
   },
   "keywords": [],
   "author": "Youngmyung Kim",
