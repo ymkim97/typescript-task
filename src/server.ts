@@ -1,7 +1,9 @@
 import express from 'express';
-import config from './config';
+
 import loader from './loader';
-import logger from './config/logger';
+
+import config from '@config/';
+import logger from '@config/logger';
 
 async function bootstrapServer() {
   try {

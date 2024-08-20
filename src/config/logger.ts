@@ -1,7 +1,8 @@
 import winston from 'winston';
 import winstonDaily from 'winston-daily-rotate-file';
 import process from 'process';
-import config from '.';
+
+import config from '@config/';
 
 const { combine, timestamp, label, printf } = winston.format;
 

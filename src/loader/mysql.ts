@@ -1,6 +1,7 @@
 import mysql, { PoolOptions } from 'mysql2/promise';
-import logger from '../config/logger';
-import config from '../config';
+
+import config from '@config/';
+import logger from '@config/logger';
 
 let pool: mysql.Pool;
 
