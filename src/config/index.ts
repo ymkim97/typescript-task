@@ -20,5 +20,6 @@ export default {
     db: process.env.MYSQL_DB,
     host: process.env.MYSQL_HOST,
     port: process.env.MYSQL_PORT,
+    charset: process.env.MYSQL_CHARSET,
   },
 };

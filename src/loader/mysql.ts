@@ -12,6 +12,7 @@ const access: PoolOptions = {
   database: config.mysql.db,
   waitForConnections: true,
   connectionLimit: 10,
+  charset: config.mysql.charset,
 };
 
 async function testConnection(): Promise<void> {
