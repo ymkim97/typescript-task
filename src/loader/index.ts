@@ -1,17 +1,21 @@
-import { Application } from 'express';
+import { Application, NextFunction } from 'express';
+import { container } from 'tsyringe';
 
-import expressLoader from './express';
-import mysqlLoader from './mysql';
-import depencyInjector from './depencyInjector';
-
-import logger from '@config/logger';
+import CourseController from 'src/api/controller/CourseController';
+import Mysql from './Mysql';
+import logger from '@util/logger';
 
 export default async (expressApp: Application): Promise<void> => {
-  const mysqlPool = await mysqlLoader();
+  const mysqlPool = container.resolve(Mysql);
+  await mysqlPool.testConnection();
   logger.info('Create Mysql Connection Pool: OK');
 
-  depencyInjector(mysqlPool);
+  const courseController = container.resolve(CourseController);
 
-  expressLoader(expressApp);
-  logger.info('Load Express: OK');
+  expressApp.use('/courses', courseController.routes);
+
+  expressApp.use((err: any, req: any, res: any, next: NextFunction) => {
+    logger.error(err);
+    res.status(500).send('Server Error');
+  });
 };

@@ -1,9 +1,10 @@
+import 'reflect-metadata';
 import express from 'express';
 
 import loader from './loader';
 
 import config from '@config/';
-import logger from '@config/logger';
+import logger from '@util/logger';
 
 async function bootstrapServer() {
   try {

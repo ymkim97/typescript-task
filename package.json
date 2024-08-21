@@ -16,7 +16,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "mysql2": "^3.11.0",
-    "typedi": "^0.10.0",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.8.0",
     "winston": "^3.14.2",
     "winston-daily-rotate-file": "^5.0.0"
   },
