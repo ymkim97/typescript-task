@@ -30,10 +30,10 @@ class Mysql {
       const con = await this.pool.getConnection();
 
       con.release();
-    } catch (error) {
-      logger.error('Database Connection Test: FAIL', error);
+    } catch (e) {
+      logger.error('Database Connection Test: FAIL', e);
 
-      throw error;
+      throw e;
     }
   }
 }

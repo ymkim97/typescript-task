@@ -15,8 +15,8 @@ async function bootstrapServer() {
     app.listen(config.serverPort, () => {
       logger.info(`Server Listening On Port: ${config.serverPort}`);
     });
-  } catch (err) {
-    logger.error('Server Start: FAIL');
+  } catch (e) {
+    logger.error('Server Start: FAIL', e);
   }
 }
 
