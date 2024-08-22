@@ -1,10 +1,11 @@
-import { Application, NextFunction } from 'express';
+import { Application, NextFunction, Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import CourseRoute from '@route/CourseRoute';
-import CourseController from '@controller/CourseController';
 import Mysql from './Mysql';
 import logger from '@util/logger';
+import CourseRoute from '@route/CourseRoute';
+import NotFoundError from '@error/NotFoundError';
+import CourseController from '@controller/CourseController';
 
 export default async (expressApp: Application): Promise<void> => {
   const mysqlPool = container.resolve(Mysql);
@@ -16,8 +17,14 @@ export default async (expressApp: Application): Promise<void> => {
 
   expressApp.use('/courses', courseRoute.routes);
 
-  expressApp.use((err: any, req: any, res: any, next: NextFunction) => {
-    logger.error(err);
-    res.status(500).send('Server Error');
-  });
+  expressApp.use(
+    (err: Error, req: Request, res: Response, next: NextFunction) => {
+      logger.error(err.stack);
+
+      if (err instanceof NotFoundError)
+        return res.status(404).send(NotFoundError.DATA_NOT_FOUND);
+
+      return res.status(500).send('Server Error');
+    },
+  );
 };

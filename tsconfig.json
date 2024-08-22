@@ -32,7 +32,12 @@
       "@config/*": ["src/config/*"],
       "@util/*": ["src/util/*"],
       "@controller/*": ["src/api/controller/*"],
-      "@route/*": ["src/api/route/*"]
+      "@route/*": ["src/api/route/*"],
+      "@repository/*": ["src/api/repository/*"],
+      "@service/*": ["src/api/service/*"],
+      "@loader/*": ["src/loader/*"],
+      "@type/*": ["src/api/model/type/*"],
+      "@error/*": ["src/error/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
