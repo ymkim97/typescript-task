@@ -5,7 +5,7 @@ import config from '@config/';
 import logger from '@util/logger';
 
 @singleton()
-class Mysql {
+export default class Mysql {
   private readonly pool: mysql.Pool;
   private readonly access: PoolOptions = {
     host: config.mysql.host,
@@ -21,15 +21,23 @@ class Mysql {
     this.pool = mysql.createPool(this.access);
   }
 
-  public get createdPool(): mysql.Pool {
-    return this.pool;
+  public async getConnection() {
+    try {
+      const conn = await this.pool.getConnection();
+
+      return conn;
+    } catch (e) {
+      logger.error('Get Connection Error');
+
+      throw e;
+    }
   }
 
   public async testConnection(): Promise<void> {
     try {
-      const con = await this.pool.getConnection();
+      const conn = await this.pool.getConnection();
 
-      con.release();
+      conn.release();
     } catch (e) {
       logger.error('Database Connection Test: FAIL', e);
 
@@ -37,5 +45,3 @@ class Mysql {
     }
   }
 }
-
-export default Mysql;
