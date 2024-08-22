@@ -7,8 +7,8 @@ export interface getCourseDetailsResponse {
   category: CATEGORY_VALUES;
   price: number;
   studentCount: number;
-  publishedOn: Date;
-  updatedOn: Date;
+  publishedOn: string;
+  updatedOn: string;
   student: StudentAndClass[];
 }
 

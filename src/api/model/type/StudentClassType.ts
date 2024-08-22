@@ -1,3 +1,5 @@
+import { changeDateToString } from '@util/dateFormatter';
+
 export interface StudentAndClassMysql {
   nickname: string;
   create_date: Date;
@@ -5,7 +7,7 @@ export interface StudentAndClassMysql {
 
 export interface StudentAndClass {
   nickname: string;
-  joinedOn: Date;
+  joinedOn: string;
 }
 
 export function mapToStudentAndClass(
@@ -13,6 +15,6 @@ export function mapToStudentAndClass(
 ): StudentAndClass {
   return {
     nickname: studentAndClassMysql.nickname,
-    joinedOn: studentAndClassMysql.create_date,
+    joinedOn: changeDateToString(studentAndClassMysql.create_date),
   };
 }

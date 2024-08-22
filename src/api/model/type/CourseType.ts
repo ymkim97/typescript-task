@@ -1,3 +1,5 @@
+import { changeDateToString } from '@util/dateFormatter';
+
 export interface CourseMysql {
   id: number;
   instructor_id: number;
@@ -18,8 +20,8 @@ export interface Course {
   description: string;
   price: number;
   category: CATEGORY_VALUES;
-  publishedOn: Date;
-  updatedOn: Date;
+  publishedOn: string;
+  updatedOn: string;
 }
 
 enum CATEGORY_VALUES {
@@ -40,7 +42,7 @@ export function mapToCourse(course: CourseMysql): Course {
     description: course.description,
     price: course.price,
     category: course.category,
-    publishedOn: course.create_date,
-    updatedOn: course.update_date,
+    publishedOn: changeDateToString(course.create_date),
+    updatedOn: changeDateToString(course.update_date),
   };
 }
