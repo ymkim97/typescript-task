@@ -4,7 +4,7 @@ import { singleton } from 'tsyringe';
 import CourseController from '@controller/CourseController';
 
 @singleton()
-class CourseRoute {
+export default class CourseRoute {
   private courseController: CourseController;
   private router: Router;
 
@@ -26,6 +26,13 @@ class CourseRoute {
         await this.courseController.searchCourses(req, res);
       }),
     );
+
+    this.router.get(
+      '/:id',
+      this.wrapAsync(async (req: Request, res: Response) => {
+        await this.courseController.searchCourse(req, res);
+      }),
+    );
   }
 
   private wrapAsync(
@@ -35,5 +42,3 @@ class CourseRoute {
       Promise.resolve(fn(req, res, next)).catch(next);
   }
 }
-
-export default CourseRoute;
