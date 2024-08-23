@@ -1,38 +1,52 @@
-import { Course } from '@type/CourseType';
-import { StudentAndClass } from '@type/StudentClassType';
+import { CATEGORY_VALUES } from '@constant/CourseConstant';
+import { StudentClass } from '@entity/StudentClass';
+import { Course } from '@entity/Course';
 
-export interface getCourseDetailsResponse {
+export class getCourseDetailsResponse {
   title: string;
   description: string;
-  category: CATEGORY_VALUES;
+  category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];
   price: number;
   studentCount: number;
   publishedOn: string;
   updatedOn: string;
-  student: StudentAndClass[];
-}
+  students: StudentClass[];
 
-export function mapToCourseDetailsResponse(
-  course: Course,
-  studentAndClass: StudentAndClass[],
-): getCourseDetailsResponse {
-  return {
-    title: course.title,
-    description: course.description,
-    category: course.category,
-    price: course.price,
-    studentCount: studentAndClass.length,
-    publishedOn: course.publishedOn,
-    updatedOn: course.updatedOn,
-    student: studentAndClass,
-  };
-}
+  constructor(
+    title: string,
+    description: string,
+    category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES],
+    price: number,
+    studentCount: number,
+    publishedOn: string,
+    updatedOn: string,
+    students: StudentClass[],
+  ) {
+    this.title = title;
+    this.description = description;
+    this.category = category;
+    this.price = price;
+    this.studentCount = studentCount;
+    this.publishedOn = publishedOn;
+    this.updatedOn = updatedOn;
+    this.students = students;
+  }
 
-export enum CATEGORY_VALUES {
-  '웹',
-  '앱',
-  '게임',
-  '알고리즘',
-  '인프라',
-  '데이터베이스',
+  public static mapToCourseDetailsResponse(
+    course: Course,
+    studentClass: StudentClass[],
+  ): getCourseDetailsResponse {
+    const courseItems = course.itemsForCourseDetailsResponse;
+
+    return new getCourseDetailsResponse(
+      courseItems.title,
+      courseItems.description,
+      courseItems.category,
+      courseItems.price,
+      studentClass.length,
+      courseItems.publishedOn,
+      courseItems.updatedOn,
+      studentClass,
+    );
+  }
 }
