@@ -40,7 +40,8 @@
       "@entity/*": ["src/api/domain/entity/*"],
       "@error/*": ["src/core/error/*"],
       "@dto/*": ["src/api/dto/*"],
-      "@constant/*": ["src/core/constant/*"]
+      "@constant/*": ["src/core/constant/*"],
+      "@decorator/*": ["src/api/presentation/validation/decorator/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
@@ -98,7 +99,7 @@
     // "strictNullChecks": true,                         /* When type checking, take into account 'null' and 'undefined'. */
     // "strictFunctionTypes": true,                      /* When assigning functions, check to ensure parameters and the return values are subtype-compatible. */
     // "strictBindCallApply": true,                      /* Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. */
-    // "strictPropertyInitialization": true,             /* Check for class properties that are declared but not set in the constructor. */
+    "strictPropertyInitialization": false /* Check for class properties that are declared but not set in the constructor. */,
     // "noImplicitThis": true,                           /* Enable error reporting when 'this' is given the type 'any'. */
     // "useUnknownInCatchVariables": true,               /* Default catch clause variables as 'unknown' instead of 'any'. */
     "alwaysStrict": true /* Ensure 'use strict' is always emitted. */,

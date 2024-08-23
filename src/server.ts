@@ -8,6 +8,7 @@ import logger from '@util/logger';
 async function bootstrapServer() {
   try {
     const app = express();
+    app.use(express.json());
 
     await loader(app);
 
