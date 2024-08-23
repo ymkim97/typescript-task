@@ -44,8 +44,8 @@ export class getCourseDetailsResponse {
       courseItems.category,
       courseItems.price,
       studentClass.length,
-      courseItems.publishedOn,
-      courseItems.updatedOn,
+      courseItems.createDate,
+      courseItems.updateDate,
       studentClass,
     );
   }

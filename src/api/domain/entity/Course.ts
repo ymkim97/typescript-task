@@ -9,8 +9,8 @@ export class Course {
   private description: string;
   private price: number;
   private category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];
-  private publishedOn: string;
-  private updatedOn: string;
+  private createDate: string;
+  private updateDate: string;
 
   constructor(
     id: number,
@@ -30,8 +30,8 @@ export class Course {
     this.description = description;
     this.price = price;
     this.category = category;
-    this.publishedOn = changeDateToString(publishedOn);
-    this.updatedOn = changeDateToString(updatedOn);
+    this.createDate = changeDateToString(publishedOn);
+    this.updateDate = changeDateToString(updatedOn);
   }
 
   public static from(courseMysql: CourseMysql): Course {
@@ -54,8 +54,8 @@ export class Course {
       description: this.description,
       category: this.category,
       price: this.price,
-      publishedOn: this.publishedOn,
-      updatedOn: this.updatedOn,
+      createDate: this.createDate,
+      updateDate: this.updateDate,
     };
   }
 }
