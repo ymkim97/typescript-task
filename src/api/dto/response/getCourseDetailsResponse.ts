@@ -1,11 +1,11 @@
-import { CATEGORY_VALUES } from '@constant/CourseConstant';
+import { CourseCategory } from '@constant/CourseConstant';
 import { StudentClass } from '@entity/StudentClass';
 import { Course } from '@entity/Course';
 
-export class getCourseDetailsResponse {
+export class GetCourseDetailsResponse {
   title: string;
   description: string;
-  category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];
+  category: CourseCategory;
   price: number;
   studentCount: number;
   publishedOn: string;
@@ -15,7 +15,7 @@ export class getCourseDetailsResponse {
   constructor(
     title: string,
     description: string,
-    category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES],
+    category: CourseCategory,
     price: number,
     studentCount: number,
     publishedOn: string,
@@ -35,10 +35,10 @@ export class getCourseDetailsResponse {
   public static mapToCourseDetailsResponse(
     course: Course,
     studentClass: StudentClass[],
-  ): getCourseDetailsResponse {
+  ): GetCourseDetailsResponse {
     const courseItems = course.itemsForCourseDetailsResponse;
 
-    return new getCourseDetailsResponse(
+    return new GetCourseDetailsResponse(
       courseItems.title,
       courseItems.description,
       courseItems.category,

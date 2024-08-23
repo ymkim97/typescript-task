@@ -1,5 +1,5 @@
 import { changeDateToString } from '@util/dateFormatter';
-import { CATEGORY_VALUES } from '@constant/CourseConstant';
+import { CourseCategory } from '@constant/CourseConstant';
 
 export class Course {
   private id: number;
@@ -8,7 +8,7 @@ export class Course {
   private title: string;
   private description: string;
   private price: number;
-  private category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];
+  private category: CourseCategory;
   private createDate: string;
   private updateDate: string;
 
@@ -19,7 +19,7 @@ export class Course {
     title: string,
     description: string,
     price: number,
-    category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES],
+    category: CourseCategory,
     publishedOn: Date,
     updatedOn: Date,
   ) {
@@ -67,7 +67,7 @@ export interface CourseMysql {
   title: string;
   description: string;
   price: number;
-  category: (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];
+  category: CourseCategory;
   create_date: Date;
   update_date: Date;
 }

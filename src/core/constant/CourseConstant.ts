@@ -6,3 +6,6 @@ export const CATEGORY_VALUES = {
   INFRA: '인프라',
   DATABASE: '데이터베이스',
 } as const;
+
+export type CourseCategory =
+  (typeof CATEGORY_VALUES)[keyof typeof CATEGORY_VALUES];

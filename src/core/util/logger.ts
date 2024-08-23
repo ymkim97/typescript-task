@@ -1,6 +1,6 @@
+import process from 'process';
 import winston from 'winston';
 import winstonDaily from 'winston-daily-rotate-file';
-import process from 'process';
 
 import config from '@config/';
 
@@ -8,7 +8,7 @@ const { combine, timestamp, label, printf } = winston.format;
 
 const logDir = `${process.cwd()}/logs`;
 
-const loggerInstance = winston.createLogger({
+const logger = winston.createLogger({
   level: config.log.level,
 
   format: combine(
@@ -53,7 +53,7 @@ const loggerInstance = winston.createLogger({
 });
 
 if (process.env.NODE_ENV !== 'production') {
-  loggerInstance.add(new winston.transports.Console({}));
+  logger.add(new winston.transports.Console({}));
 }
 
-export default loggerInstance;
+export default logger;
