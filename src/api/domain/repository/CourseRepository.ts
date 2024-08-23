@@ -2,7 +2,7 @@ import { singleton } from 'tsyringe';
 
 import Mysql from '@loader/Mysql';
 import logger from '@util/logger';
-import NotFoundError from '@error/NotFoundError';
+import SqlError from '@error/SqlError';
 import { Course, CourseMysql } from '@entity/Course';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 
@@ -14,7 +14,7 @@ export default class CourseRepository {
     this.mysqlPool = mysqlPool;
   }
 
-  public async findById(id: number): Promise<Course> {
+  public async findById(id: number): Promise<Course | void> {
     const connection = await this.mysqlPool.getConnection();
 
     try {
@@ -22,6 +22,9 @@ export default class CourseRepository {
       const values = [id];
 
       const [rows] = await connection.execute(sql, values);
+
+      if (!rows[0]) return;
+
       const result = rows[0] as CourseMysql;
       const course = Course.from(result);
 
@@ -29,10 +32,7 @@ export default class CourseRepository {
     } catch (e) {
       logger.info(e);
 
-      throw new NotFoundError(
-        ERROR_MESSAGE.DATA_NOT_FOUND,
-        ERROR_CODE.NOT_FOUND_ERROR,
-      );
+      throw new SqlError(ERROR_MESSAGE.SQL_ERROR, ERROR_CODE.SERVER_ERROR);
     } finally {
       connection.release();
     }

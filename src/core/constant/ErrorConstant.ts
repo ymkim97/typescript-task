@@ -1,5 +1,5 @@
 export const ERROR_MESSAGE = {
-  DATA_NOT_FOUND: 'Data not found in MYSQL.',
+  SQL_ERROR: 'There is error with MYSQL',
   INVALID_COURSE_CATEGORY: 'Not a valid course category.',
   SERVER_ERROR: 'Server Error.',
   REQUEST_VALIDATION: 'Something wrong with request body.',

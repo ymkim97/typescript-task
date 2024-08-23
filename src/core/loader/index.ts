@@ -5,7 +5,7 @@ import Mysql from './Mysql';
 import logger from '@util/logger';
 import CourseRoute from '@route/CourseRoute';
 import RequestError from '@error/RequestError';
-import NotFoundError from '@error/NotFoundError';
+import SqlError from '@error/SqlError';
 import CourseController from '@controller/CourseController';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 
@@ -23,10 +23,10 @@ export default async (expressApp: Application): Promise<void> => {
     (err: Error, req: Request, res: Response, next: NextFunction) => {
       logger.error(err.stack);
 
-      if (err instanceof NotFoundError) {
+      if (err instanceof SqlError) {
         return res
-          .status(ERROR_CODE.NOT_FOUND_ERROR)
-          .send(ERROR_MESSAGE.DATA_NOT_FOUND);
+          .status(ERROR_CODE.SERVER_ERROR)
+          .send(ERROR_MESSAGE.SQL_ERROR);
       } else if (err instanceof RequestError) {
         logger.error(err.errorMessages);
         return res.status(ERROR_CODE.REQUEST_ERROR).send(err.errorMessages);
