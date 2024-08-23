@@ -6,7 +6,7 @@ import CourseRepository from '@repository/CourseRepository';
 export default class CourseService {
   private courseRepository: CourseRepository;
 
-  constructor(courseRepositroy: CourseRepository) {
-    this.courseRepository = courseRepositroy;
+  constructor(courseRepository: CourseRepository) {
+    this.courseRepository = courseRepository;
   }
 }
