@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 import express from 'express';
 
-import loader from './loader';
-
+import loader from '@loader/';
 import config from '@config/';
 import logger from '@util/logger';
 

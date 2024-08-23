@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 import Mysql from '@loader/Mysql';
 import logger from '@util/logger';
 import NotFoundError from '@error/NotFoundError';
-import { Course, CourseMysql, mapToCourse } from '@type/CourseType';
+import { Course, CourseMysql } from '@entity/Course';
 
 @singleton()
 export default class CourseRepository {
@@ -22,7 +22,7 @@ export default class CourseRepository {
 
       const [rows] = await connection.execute(sql, values);
       const result = rows[0] as CourseMysql;
-      const course = mapToCourse(result);
+      const course = Course.from(result);
 
       return course;
     } catch (e) {
@@ -34,19 +34,3 @@ export default class CourseRepository {
     }
   }
 }
-
-// transaction
-// try {
-//   await connection.beginTransaction();
-//   const res = await connection.execute('SELECT * FROM instructor');
-
-//   console.log(res[0]);
-//   await connection.commit();
-// } catch (e) {
-//   logger.error('Rollback Connection', e);
-//   await connection.rollback();
-
-//   throw e;
-// } finally {
-//   connection.release();
-// }

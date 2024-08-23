@@ -1,9 +1,6 @@
 import { singleton } from 'tsyringe';
 
-import {
-  getCourseDetailsResponse,
-  mapToCourseDetailsResponse,
-} from '../model/dto/response/getCourseDetailsResponse';
+import { getCourseDetailsResponse } from '@dto/response/getCourseDetailsResponse';
 import ClassRepository from '@repository/ClassRepository';
 import CourseRepository from '@repository/CourseRepository';
 
@@ -25,6 +22,9 @@ export default class SearchService {
     const classAndStudent =
       await this.classRepository.findWithStudentByCourseId(id);
 
-    return mapToCourseDetailsResponse(course, classAndStudent);
+    return getCourseDetailsResponse.mapToCourseDetailsResponse(
+      course,
+      classAndStudent,
+    );
   }
 }

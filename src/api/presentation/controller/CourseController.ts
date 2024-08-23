@@ -1,3 +1,4 @@
+import { instanceToPlain } from 'class-transformer';
 import { Response, Request } from 'express';
 import { singleton } from 'tsyringe';
 
@@ -20,10 +21,10 @@ export default class CourseController {
   }
 
   public async searchCourse(req: Request, res: Response): Promise<void> {
-    // TODO: Validation
     const courseId = parseInt(req.params.id, 10);
+    const courseDetailsResponse =
+      await this.searchService.getCourseDetails(courseId);
 
-    const courseDetails = await this.searchService.getCourseDetails(courseId);
-    res.status(200).send(JSON.stringify(courseDetails));
+    res.status(200).send(instanceToPlain(courseDetailsResponse));
   }
 }
