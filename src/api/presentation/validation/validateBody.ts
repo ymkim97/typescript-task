@@ -30,7 +30,7 @@ export function validateBody(type: { new (): any }): RequestHandler {
         excludeExtraneousValues: true,
       });
       await validateOrReject(plain);
-      console.log(plain);
+
       next();
     } catch (errors) {
       const errorMessages = formatValidationErrors(errors as ValidationError[]);
