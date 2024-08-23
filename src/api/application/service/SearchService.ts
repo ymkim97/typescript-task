@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 import {
   getCourseDetailsResponse,
   mapToCourseDetailsResponse,
-} from '../model/dto/response/getCourseDetailsResponse';
+} from '@dto/response/getCourseDetailsResponse';
 import ClassRepository from '@repository/ClassRepository';
 import CourseRepository from '@repository/CourseRepository';
 

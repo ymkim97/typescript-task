@@ -28,16 +28,18 @@
     "moduleResolution": "node" /* Specify how TypeScript looks up a file from a given module specifier. */,
     "baseUrl": "." /* Specify the base directory to resolve non-relative module names. */,
     "paths": {
-      "@config/": ["src/config"],
-      "@config/*": ["src/config/*"],
-      "@util/*": ["src/util/*"],
-      "@controller/*": ["src/api/controller/*"],
-      "@route/*": ["src/api/route/*"],
-      "@repository/*": ["src/api/repository/*"],
-      "@service/*": ["src/api/service/*"],
-      "@loader/*": ["src/loader/*"],
-      "@type/*": ["src/api/model/type/*"],
-      "@error/*": ["src/error/*"]
+      "@config/": ["src/core/config"],
+      "@config/*": ["src/core/config/*"],
+      "@util/*": ["src/core/util/*"],
+      "@controller/*": ["src/api/presentation/controller/*"],
+      "@route/*": ["src/api/presentation/route/*"],
+      "@repository/*": ["src/api/domain/repository/*"],
+      "@service/*": ["src/api/application/service/*"],
+      "@loader/*": ["src/core/loader/*"],
+      "@loader/": ["src/core/loader"],
+      "@type/*": ["src/api/domain/entity/*"],
+      "@error/*": ["src/core/error/*"],
+      "@dto/*": ["src/api/dto/*"]
     } /* Specify a set of entries that re-map imports to additional lookup locations. */,
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
