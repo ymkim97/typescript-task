@@ -3,7 +3,7 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject, ValidationError } from 'class-validator';
 
 import RequestError from '@error/RequestError';
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorMessage';
+import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 
 function formatValidationErrors(errors: ValidationError[]): string[] {
   const errorMessages: string[] = [];

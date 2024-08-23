@@ -1,9 +1,10 @@
 import { singleton } from 'tsyringe';
 
-import { StudentClass, StudentAndClassMysql } from '@entity/StudentClass';
-import NotFoundError from '@error/NotFoundError';
 import Mysql from '@loader/Mysql';
 import logger from '@util/logger';
+import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import NotFoundError from '@error/NotFoundError';
+import { StudentClass, StudentAndClassMysql } from '@entity/StudentClass';
 
 @singleton()
 export default class ClassRepository {
@@ -30,7 +31,10 @@ export default class ClassRepository {
     } catch (e) {
       logger.info(e);
 
-      throw new NotFoundError(NotFoundError.DATA_NOT_FOUND, 404);
+      throw new NotFoundError(
+        ERROR_MESSAGE.DATA_NOT_FOUND,
+        ERROR_CODE.NOT_FOUND_ERROR,
+      );
     } finally {
       connection.release();
     }

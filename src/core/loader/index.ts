@@ -7,7 +7,7 @@ import CourseRoute from '@route/CourseRoute';
 import RequestError from '@error/RequestError';
 import NotFoundError from '@error/NotFoundError';
 import CourseController from '@controller/CourseController';
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorMessage';
+import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 
 export default async (expressApp: Application): Promise<void> => {
   const mysqlPool = container.resolve(Mysql);
