@@ -33,12 +33,14 @@ export function validateBody(type: { new (): any }): RequestHandler {
 
       next();
     } catch (errors) {
-      const errorMessages = formatValidationErrors(errors as ValidationError[]);
+      const validationMessages = formatValidationErrors(
+        errors as ValidationError[],
+      );
       const requestError = new RequestError(
         ERROR_MESSAGE.REQUEST_VALIDATION,
         ERROR_CODE.REQUEST_ERROR,
       );
-      requestError.errorMessages = errorMessages;
+      requestError.validationMessages = validationMessages;
 
       next(requestError);
     }
