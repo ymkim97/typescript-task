@@ -23,16 +23,21 @@ export default async (expressApp: Application): Promise<void> => {
 
   expressApp.use(
     (err: Error, req: Request, res: Response, next: NextFunction) => {
-      logger.error(err);
+      logger.error(err.message);
+      logger.error(err.stack);
 
       if (err instanceof SqlError) {
         return res.status(ERROR_CODE.SERVER_ERROR).send(err.message);
       } else if (err instanceof RequestError) {
-        logger.error(err.validationMessages);
+        if (err.validationMessages) {
+          logger.error(err.validationMessages);
 
-        return res
-          .status(ERROR_CODE.REQUEST_ERROR)
-          .send(err.validationMessages);
+          return res
+            .status(ERROR_CODE.REQUEST_ERROR)
+            .send(err.validationMessages);
+        } else {
+          return res.status(ERROR_CODE.REQUEST_ERROR).send(err.message);
+        }
       } else if (err instanceof NotFoundError) {
         return res.status(ERROR_CODE.NOT_FOUND_ERROR).send(err.message);
       }
