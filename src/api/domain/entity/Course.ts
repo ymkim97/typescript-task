@@ -2,9 +2,9 @@ import { changeDateToString } from '@util/dateFormatter';
 import { CourseCategory } from '@constant/CourseConstant';
 
 export class Course {
-  private id: number;
+  private id?: number;
   private instructorId: number;
-  private isPublic: boolean;
+  private isPublic?: boolean;
   private title: string;
   private description: string;
   private price: number;
@@ -13,15 +13,15 @@ export class Course {
   private updateDate: string;
 
   constructor(
-    id: number,
     instructorId: number,
-    isPublic: boolean,
     title: string,
     description: string,
     price: number,
     category: CourseCategory,
-    publishedOn: Date,
-    updatedOn: Date,
+    createDate: Date,
+    updateDate: Date,
+    id?: number,
+    isPublic?: boolean,
   ) {
     this.id = id;
     this.instructorId = instructorId;
@@ -30,22 +30,8 @@ export class Course {
     this.description = description;
     this.price = price;
     this.category = category;
-    this.createDate = changeDateToString(publishedOn);
-    this.updateDate = changeDateToString(updatedOn);
-  }
-
-  public static from(courseMysql: CourseMysql): Course {
-    return new Course(
-      courseMysql.id,
-      courseMysql.instructor_id,
-      courseMysql.is_public,
-      courseMysql.title,
-      courseMysql.description,
-      courseMysql.price,
-      courseMysql.category,
-      courseMysql.create_date,
-      courseMysql.update_date,
-    );
+    this.createDate = changeDateToString(createDate);
+    this.updateDate = changeDateToString(updateDate);
   }
 
   public get itemsForCourseDetailsResponse() {
@@ -57,6 +43,32 @@ export class Course {
       createDate: this.createDate,
       updateDate: this.updateDate,
     };
+  }
+
+  public get itemsForSave() {
+    return {
+      title: this.title,
+      instructorId: this.instructorId,
+      description: this.description,
+      category: this.category,
+      price: this.price,
+      createDate: this.createDate,
+      updateDate: this.updateDate,
+    };
+  }
+
+  public static from(courseMysql: CourseMysql): Course {
+    return new Course(
+      courseMysql.instructor_id,
+      courseMysql.title,
+      courseMysql.description,
+      courseMysql.price,
+      courseMysql.category,
+      courseMysql.create_date,
+      courseMysql.update_date,
+      courseMysql.id,
+      courseMysql.is_public,
+    );
   }
 }
 

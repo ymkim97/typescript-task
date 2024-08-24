@@ -1,8 +1,8 @@
 import { singleton } from 'tsyringe';
 
 import Mysql from '@loader/Mysql';
-import logger from '@util/logger';
 import SqlError from '@error/SqlError';
+import { ResultSetHeader } from 'mysql2';
 import { Course, CourseMysql } from '@entity/Course';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 
@@ -12,6 +12,38 @@ export default class CourseRepository {
 
   constructor(mysqlPool: Mysql) {
     this.mysqlPool = mysqlPool;
+  }
+
+  public async save(course: Course): Promise<number | void> {
+    const connection = await this.mysqlPool.getConnection();
+    const items = course.itemsForSave;
+
+    try {
+      const sql =
+        'INSERT INTO course (instructor_id, title, description, price, category) VALUES (?, ?, ?, ?, ?)';
+      const value = [
+        items.instructorId,
+        items.title,
+        items.description,
+        items.price,
+        items.category,
+      ];
+
+      const [result] = (await connection.execute(sql, value)) as [
+        ResultSetHeader,
+        any,
+      ];
+
+      return result.insertId;
+    } catch (e) {
+      throw new SqlError(
+        ERROR_MESSAGE.SQL_WRITE_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+        e as Error,
+      );
+    } finally {
+      connection.release();
+    }
   }
 
   public async findById(id: number): Promise<Course | void> {
@@ -30,9 +62,11 @@ export default class CourseRepository {
 
       return course;
     } catch (e) {
-      logger.info(e);
-
-      throw new SqlError(ERROR_MESSAGE.SQL_ERROR, ERROR_CODE.SERVER_ERROR);
+      throw new SqlError(
+        ERROR_MESSAGE.SQL_READ_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+        e as Error,
+      );
     } finally {
       connection.release();
     }
