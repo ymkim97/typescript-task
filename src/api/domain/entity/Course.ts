@@ -1,5 +1,5 @@
-import { changeDateToString } from '@util/dateFormatter';
 import { CourseCategory } from '@constant/CourseConstant';
+import { changeDateToString } from '@util/dateFormatter';
 
 export class Course {
   private id?: number;

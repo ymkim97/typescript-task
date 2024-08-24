@@ -1,9 +1,9 @@
 import { IsInt, IsString, Length, Min } from 'class-validator';
 
-import { Expose } from 'class-transformer';
-import { Course } from '@entity/Course';
 import { CourseCategory } from '@constant/CourseConstant';
 import { IsValidCourseCategory } from '@decorator/IsValidCourseCategory';
+import { Course } from '@entity/Course';
+import { Expose } from 'class-transformer';
 
 export class CreateCourseRequest {
   @Expose()

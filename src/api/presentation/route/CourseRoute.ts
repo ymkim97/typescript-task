@@ -1,9 +1,9 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { singleton } from 'tsyringe';
 
 import CourseController from '@controller/CourseController';
-import { validateBody } from '../validation/validateBody';
 import { CreateCourseRequest } from '@dto/request/CreateCourseRequest';
+import { validateBody } from '../validation/validateBody';
 
 @singleton()
 export default class CourseRoute {

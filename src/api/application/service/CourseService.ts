@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 
-import NotFoundError from '@error/NotFoundError';
-import InstructorService from './InstructorService';
-import CourseRepository from '@repository/CourseRepository';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import { CreateCourseRequest } from '@dto/request/CreateCourseRequest';
+import NotFoundError from '@error/NotFoundError';
+import CourseRepository from '@repository/CourseRepository';
+import InstructorService from './InstructorService';
 
 @singleton()
 export default class CourseService {

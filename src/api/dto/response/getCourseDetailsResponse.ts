@@ -1,6 +1,6 @@
 import { CourseCategory } from '@constant/CourseConstant';
-import { StudentClass } from '@entity/StudentClass';
 import { Course } from '@entity/Course';
+import { StudentClass } from '@entity/StudentClass';
 
 export class GetCourseDetailsResponse {
   title: string;

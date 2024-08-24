@@ -1,10 +1,10 @@
 import { singleton } from 'tsyringe';
 
-import Mysql from '@loader/Mysql';
-import SqlError from '@error/SqlError';
-import { ResultSetHeader } from 'mysql2';
-import { Course, CourseMysql } from '@entity/Course';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { Course, CourseMysql } from '@entity/Course';
+import SqlError from '@error/SqlError';
+import Mysql from '@loader/Mysql';
+import { ResultSetHeader } from 'mysql2';
 
 @singleton()
 export default class CourseRepository {

@@ -1,15 +1,15 @@
 import { Application, NextFunction, Request, Response } from 'express';
 import { container } from 'tsyringe';
 
-import SqlError from '@error/SqlError';
-import RequestError from '@error/RequestError';
 import NotFoundError from '@error/NotFoundError';
+import RequestError from '@error/RequestError';
+import SqlError from '@error/SqlError';
 
-import Mysql from './Mysql';
-import logger from '@util/logger';
-import CourseRoute from '@route/CourseRoute';
-import CourseController from '@controller/CourseController';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import CourseController from '@controller/CourseController';
+import CourseRoute from '@route/CourseRoute';
+import logger from '@util/logger';
+import Mysql from './Mysql';
 
 export default async (expressApp: Application): Promise<void> => {
   const mysqlPool = container.resolve(Mysql);
