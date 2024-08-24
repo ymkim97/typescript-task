@@ -34,7 +34,7 @@ export class GetCourseDetailsResponse {
 
   public static mapToCourseDetailsResponse(
     course: Course,
-    studentClass: StudentClass[],
+    studentClasses: StudentClass[],
   ): GetCourseDetailsResponse {
     const courseItems = course.itemsForCourseDetailsResponse;
 
@@ -43,10 +43,10 @@ export class GetCourseDetailsResponse {
       courseItems.description,
       courseItems.category,
       courseItems.price,
-      studentClass.length,
+      studentClasses.length,
       courseItems.createDate,
       courseItems.updateDate,
-      studentClass,
+      studentClasses,
     );
   }
 }

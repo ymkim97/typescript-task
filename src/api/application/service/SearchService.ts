@@ -24,12 +24,12 @@ export default class SearchService {
 
     if (!course) return;
 
-    const classAndStudent =
-      await this.classRepository.findWithStudentByCourseId(id);
+    const classAndStudents =
+      await this.classRepository.findWithStudentsByCourseId(id);
 
     return GetCourseDetailsResponse.mapToCourseDetailsResponse(
       course,
-      classAndStudent,
+      classAndStudents,
     );
   }
 }

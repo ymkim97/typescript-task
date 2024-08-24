@@ -1,11 +1,13 @@
 export default class SqlError extends Error {
   statusCode: number;
-  errorMessages?: string[];
 
-  constructor(message: string, statusCode: number, errorMessages?: string[]) {
-    super(message);
+  constructor(message: string, statusCode: number, originalError?: Error) {
+    super(`${message}: ${originalError?.message}`);
     this.name = this.constructor.name;
     this.statusCode = statusCode;
-    this.errorMessages = errorMessages;
+
+    if (originalError?.stack) {
+      this.stack = `${this.stack}\nCaused by: ${originalError.stack}`;
+    }
   }
 }

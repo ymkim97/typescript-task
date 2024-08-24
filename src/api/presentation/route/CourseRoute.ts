@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 
 import CourseController from '@controller/CourseController';
 import { validateBody } from '../validation/validateBody';
-import { CreateCourseRequest } from '@dto/request/createCourseRequest';
+import { CreateCourseRequest } from '@dto/request/CreateCourseRequest';
 
 @singleton()
 export default class CourseRoute {

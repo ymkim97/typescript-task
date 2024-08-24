@@ -1,7 +1,6 @@
 import { singleton } from 'tsyringe';
 
 import Mysql from '@loader/Mysql';
-import logger from '@util/logger';
 import SqlError from '@error/SqlError';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import { StudentClass, StudentAndClassMysql } from '@entity/StudentClass';
@@ -14,7 +13,7 @@ export default class ClassRepository {
     this.mysqlPool = mysqlPool;
   }
 
-  public async findWithStudentByCourseId(id: number): Promise<StudentClass[]> {
+  public async findWithStudentsByCourseId(id: number): Promise<StudentClass[]> {
     const connection = await this.mysqlPool.getConnection();
 
     try {
@@ -29,9 +28,11 @@ export default class ClassRepository {
 
       return results.map(StudentClass.from);
     } catch (e) {
-      logger.info(e);
-
-      throw new SqlError(ERROR_MESSAGE.SQL_ERROR, ERROR_CODE.SERVER_ERROR);
+      throw new SqlError(
+        ERROR_MESSAGE.SQL_READ_ERROR,
+        ERROR_CODE.SERVER_ERROR,
+        e as Error,
+      );
     } finally {
       connection.release();
     }
