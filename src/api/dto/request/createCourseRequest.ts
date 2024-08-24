@@ -1,11 +1,11 @@
+import { Expose } from 'class-transformer';
 import { IsInt, IsString, Length, Min } from 'class-validator';
 
 import { CourseCategory } from '@constant/CourseConstant';
 import { IsValidCourseCategory } from '@decorator/IsValidCourseCategory';
 import { Course } from '@entity/Course';
-import { Expose } from 'class-transformer';
 
-export class CreateCourseRequest {
+export default class CreateCourseRequest {
   @Expose()
   @IsInt()
   @Min(0)
@@ -32,7 +32,6 @@ export class CreateCourseRequest {
   category: CourseCategory;
 
   public toEntity(): Course {
-    // Input 확인하기
     const createDate = new Date();
     return new Course(
       this.instructorId,

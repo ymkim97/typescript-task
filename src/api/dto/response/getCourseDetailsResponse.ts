@@ -2,7 +2,7 @@ import { CourseCategory } from '@constant/CourseConstant';
 import { Course } from '@entity/Course';
 import { StudentClass } from '@entity/StudentClass';
 
-export class GetCourseDetailsResponse {
+export default class GetCourseDetailsResponse {
   title: string;
   description: string;
   category: CourseCategory;

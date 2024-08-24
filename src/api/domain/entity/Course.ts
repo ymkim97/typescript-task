@@ -47,13 +47,11 @@ export class Course {
 
   public get itemsForSave() {
     return {
-      title: this.title,
       instructorId: this.instructorId,
+      title: this.title,
       description: this.description,
-      category: this.category,
       price: this.price,
-      createDate: this.createDate,
-      updateDate: this.updateDate,
+      category: this.category,
     };
   }
 
