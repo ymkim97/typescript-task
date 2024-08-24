@@ -59,13 +59,6 @@ export default class CourseService {
         );
     });
 
-    if (requests.length > 10) {
-      throw new RequestError(
-        ERROR_MESSAGE.COURSE_BULK_TOO_MUCH,
-        ERROR_CODE.REQUEST_ERROR,
-      );
-    }
-
     await this.validateInstructor(firstId);
   }
 
