@@ -23,12 +23,13 @@ function formatValidationErrors(errors: ValidationError[]): string[] {
   return errorMessages;
 }
 
-export function validateBody(type: { new (): any }): RequestHandler {
+export function validateRequestBody(type: any): RequestHandler {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const plain = plainToInstance(type, req.body, {
         excludeExtraneousValues: true,
       });
+
       await validateOrReject(plain);
 
       next();
