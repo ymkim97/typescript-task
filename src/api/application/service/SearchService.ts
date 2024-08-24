@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 
-import { GetCourseDetailsResponse } from '@dto/response/GetCourseDetailsResponse';
+import GetCourseDetailsResponse from '@dto/response/GetCourseDetailsResponse';
 import ClassRepository from '@repository/ClassRepository';
 import CourseRepository from '@repository/CourseRepository';
 

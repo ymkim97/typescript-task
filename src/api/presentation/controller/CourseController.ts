@@ -2,7 +2,8 @@ import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
 import { singleton } from 'tsyringe';
 
-import { CreateCourseRequest } from '@dto/request/CreateCourseRequest';
+import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
+import CreateCourseRequest from '@dto/request/CreateCourseRequest';
 import CourseService from '@service/CourseService';
 import SearchService from '@service/SearchService';
 
@@ -35,5 +36,19 @@ export default class CourseController {
       await this.courseService.registerNew(createCourseRequest);
 
     res.status(200).send(JSON.stringify({ insertedCourseId: createdCourseId }));
+  }
+
+  public async registerBulkCourse(req: Request, res: Response): Promise<void> {
+    const createBulkCourseRequest = plainToInstance(
+      CreateBulkCourseRequest,
+      req.body,
+    );
+    const createdCourseIds = await this.courseService.registerNewBulk(
+      createBulkCourseRequest,
+    );
+
+    res
+      .status(200)
+      .send(JSON.stringify({ insertedCourseIds: createdCourseIds }));
   }
 }

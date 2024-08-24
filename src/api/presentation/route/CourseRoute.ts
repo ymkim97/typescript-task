@@ -2,8 +2,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { singleton } from 'tsyringe';
 
 import CourseController from '@controller/CourseController';
-import { CreateCourseRequest } from '@dto/request/CreateCourseRequest';
-import { validateBody } from '../validation/validateBody';
+import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
+import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import { validateRequestBody } from '../validation/validateRequestBody';
 
 @singleton()
 export default class CourseRoute {
@@ -38,9 +39,17 @@ export default class CourseRoute {
 
     this.router.post(
       '/',
-      validateBody(CreateCourseRequest),
+      validateRequestBody(CreateCourseRequest),
       this.wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.registerCourse(req, res);
+      }),
+    );
+
+    this.router.post(
+      '/bulk',
+      validateRequestBody(CreateBulkCourseRequest),
+      this.wrapAsync(async (req: Request, res: Response) => {
+        await this.courseController.registerBulkCourse(req, res);
       }),
     );
   }
