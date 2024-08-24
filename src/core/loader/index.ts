@@ -28,8 +28,11 @@ export default async (expressApp: Application): Promise<void> => {
       if (err instanceof SqlError) {
         return res.status(ERROR_CODE.SERVER_ERROR).send(err.message);
       } else if (err instanceof RequestError) {
-        logger.error(err.errorMessages);
-        return res.status(ERROR_CODE.REQUEST_ERROR).send(err.errorMessages);
+        logger.error(err.validationMessages);
+
+        return res
+          .status(ERROR_CODE.REQUEST_ERROR)
+          .send(err.validationMessages);
       } else if (err instanceof NotFoundError) {
         return res.status(ERROR_CODE.NOT_FOUND_ERROR).send(err.message);
       }
