@@ -105,8 +105,13 @@ export default class CourseRepository {
         'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?';
       const value = Object.values(course.itemsForUpdate);
 
-      const [result] = await connection.execute<ResultSetHeader>(sql, value);
+      await connection.execute<ResultSetHeader>(sql, value);
     } catch (e) {
+      throw new SqlError(
+        ERROR_MESSAGE.SQL_READ_ERROR,
+        ERROR_CODE.SERVER,
+        e as Error,
+      );
     } finally {
       connection.release();
     }
