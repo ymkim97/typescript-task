@@ -1,10 +1,9 @@
 import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
-import SqlError from '@error/SqlError';
 import Mysql from '@loader/Mysql';
+import { executeReadQuery } from '@util/mysqlUtil';
 
 @singleton()
 export default class ClassRepository {
@@ -17,7 +16,7 @@ export default class ClassRepository {
   public async findWithStudentsByCourseId(id: number): Promise<StudentClass[]> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
+    return executeReadQuery(connection, async () => {
       const sql =
         'SELECT st.nickname, cl.create_date ' +
         'FROM student st LEFT JOIN class cl ON st.id = cl.student_id ' +
@@ -28,14 +27,6 @@ export default class ClassRepository {
       const withStudents = result as StudentAndClassMysql[];
 
       return withStudents.map(StudentClass.from);
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 }

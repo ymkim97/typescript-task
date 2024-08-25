@@ -1,11 +1,9 @@
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import { Course, CourseMysql } from '@entity/Course';
-import SqlError from '@error/SqlError';
 import Mysql from '@loader/Mysql';
-import logger from '@util/logger';
+import { executeReadQuery, executeWriteQuery } from '@util/mysqlUtil';
 
 @singleton()
 export default class CourseRepository {
@@ -18,7 +16,7 @@ export default class CourseRepository {
   public async save(course: Course): Promise<number> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
+    return await executeWriteQuery(connection, async () => {
       const sql =
         'INSERT INTO course (instructor_id, title, description, price, category) VALUES (?, ?, ?, ?, ?)';
       const value = Object.values(course.itemsForSave);
@@ -26,23 +24,13 @@ export default class CourseRepository {
       const [result] = await connection.execute<ResultSetHeader>(sql, value);
 
       return result.insertId;
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_WRITE_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 
   public async saveAll(courses: Course[]): Promise<number[]> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
-      await connection.beginTransaction();
-
+    return await executeWriteQuery(connection, async () => {
       const sql =
         'INSERT INTO course (instructor_id, title, description, price, category) VALUES ?';
       const value = courses.map((x) => Object.values(x.itemsForSave));
@@ -57,24 +45,13 @@ export default class CourseRepository {
       );
 
       return insertIds;
-    } catch (e) {
-      logger.error(ERROR_MESSAGE.SQL_ROLLBACK);
-      await connection.rollback();
-
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_WRITE_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 
   public async findById(id: number): Promise<Course | void> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
+    return await executeReadQuery(connection, async () => {
       const sql = 'SELECT * FROM course WHERE id = ?;';
       const values = [id];
 
@@ -86,34 +63,18 @@ export default class CourseRepository {
       const course = Course.from(courseMysql);
 
       return course;
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 
   public async update(course: Course): Promise<void> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
+    return await executeWriteQuery(connection, async () => {
       const sql =
         'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?';
       const value = Object.values(course.itemsForUpdate);
 
       await connection.execute<ResultSetHeader>(sql, value);
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 }

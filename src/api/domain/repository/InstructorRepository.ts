@@ -1,10 +1,9 @@
 import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import { Instructor, InstructorMysql } from '@entity/Instructor';
-import SqlError from '@error/SqlError';
 import Mysql from '@loader/Mysql';
+import { executeReadQuery } from '@util/mysqlUtil';
 
 @singleton()
 export default class InstructorRepository {
@@ -17,7 +16,7 @@ export default class InstructorRepository {
   public async findById(id: number): Promise<Instructor | void> {
     const connection = await this.mysqlPool.getConnection();
 
-    try {
+    return await executeReadQuery(connection, async () => {
       const sql = 'SELECT * FROM instructor WHERE id = ?;';
       const values = [id];
 
@@ -29,14 +28,6 @@ export default class InstructorRepository {
       const instructor = Instructor.from(instructorMysql);
 
       return instructor;
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
 }

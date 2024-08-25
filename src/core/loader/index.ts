@@ -23,7 +23,6 @@ export default async (expressApp: Application): Promise<void> => {
 
   expressApp.use(
     (err: Error, req: Request, res: Response, next: NextFunction) => {
-      logger.error(err.message);
       logger.error(err.stack);
 
       if (err instanceof SqlError) {
