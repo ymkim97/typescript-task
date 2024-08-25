@@ -31,7 +31,7 @@ export default class ClassRepository {
     } catch (e) {
       throw new SqlError(
         ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER,
         e as Error,
       );
     } finally {

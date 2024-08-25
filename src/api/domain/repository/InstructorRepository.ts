@@ -14,10 +14,6 @@ export default class InstructorRepository {
     this.mysqlPool = mysqlPool;
   }
 
-  // public async save(instructor: Instructor): Promise<number | void> {
-
-  // }
-
   public async findById(id: number): Promise<Instructor | void> {
     const connection = await this.mysqlPool.getConnection();
 
@@ -36,7 +32,7 @@ export default class InstructorRepository {
     } catch (e) {
       throw new SqlError(
         ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER,
         e as Error,
       );
     } finally {

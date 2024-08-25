@@ -39,7 +39,7 @@ export function validateRequestBody(type: any): RequestHandler {
       );
       const requestError = new RequestError(
         ERROR_MESSAGE.REQUEST_VALIDATION,
-        ERROR_CODE.REQUEST_ERROR,
+        ERROR_CODE.REQUEST,
       );
       requestError.validationMessages = validationMessages;
 

@@ -27,24 +27,20 @@ export default async (expressApp: Application): Promise<void> => {
       logger.error(err.stack);
 
       if (err instanceof SqlError) {
-        return res.status(ERROR_CODE.SERVER_ERROR).send(err.message);
+        return res.status(ERROR_CODE.SERVER).send(err.message);
       } else if (err instanceof RequestError) {
         if (err.validationMessages) {
           logger.error(err.validationMessages);
 
-          return res
-            .status(ERROR_CODE.REQUEST_ERROR)
-            .send(err.validationMessages);
+          return res.status(ERROR_CODE.REQUEST).send(err.validationMessages);
         } else {
-          return res.status(ERROR_CODE.REQUEST_ERROR).send(err.message);
+          return res.status(ERROR_CODE.REQUEST).send(err.message);
         }
       } else if (err instanceof NotFoundError) {
-        return res.status(ERROR_CODE.NOT_FOUND_ERROR).send(err.message);
+        return res.status(ERROR_CODE.NOT_FOUND).send(err.message);
       }
 
-      return res
-        .status(ERROR_CODE.SERVER_ERROR)
-        .send(ERROR_MESSAGE.SERVER_ERROR);
+      return res.status(ERROR_CODE.SERVER).send(ERROR_MESSAGE.SERVER_ERROR);
     },
   );
 };
