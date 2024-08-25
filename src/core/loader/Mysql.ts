@@ -15,6 +15,7 @@ export default class Mysql {
     waitForConnections: true,
     connectionLimit: 10,
     charset: config.mysql.charset,
+    dateStrings: true,
   };
 
   constructor() {

@@ -32,15 +32,12 @@ export default class CreateCourseRequest {
   category: CourseCategory;
 
   public toEntity(): Course {
-    const createDate = new Date();
     return new Course(
       this.instructorId,
       this.title,
       this.description,
       this.price,
       this.category,
-      createDate,
-      createDate,
     );
   }
 }

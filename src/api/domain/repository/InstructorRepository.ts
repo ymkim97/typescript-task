@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
@@ -24,12 +25,12 @@ export default class InstructorRepository {
       const sql = 'SELECT * FROM instructor WHERE id = ?;';
       const values = [id];
 
-      const [rows] = await connection.execute(sql, values);
+      const [result] = await connection.execute<RowDataPacket[]>(sql, values);
 
-      if (!rows[0]) return;
+      if (result.length === 0) return;
 
-      const result = rows[0] as InstructorMysql;
-      const instructor = Instructor.from(result);
+      const instructorMysql = result[0] as InstructorMysql;
+      const instructor = Instructor.from(instructorMysql);
 
       return instructor;
     } catch (e) {

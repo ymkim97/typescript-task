@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
@@ -23,10 +24,10 @@ export default class ClassRepository {
         'WHERE cl.course_id = ?;';
       const values = [id];
 
-      const [rows] = await connection.execute(sql, values);
-      const results = rows as StudentAndClassMysql[];
+      const [result] = await connection.execute<RowDataPacket[]>(sql, values);
+      const withStudents = result as StudentAndClassMysql[];
 
-      return results.map(StudentClass.from);
+      return withStudents.map(StudentClass.from);
     } catch (e) {
       throw new SqlError(
         ERROR_MESSAGE.SQL_READ_ERROR,

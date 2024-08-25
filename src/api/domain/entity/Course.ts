@@ -1,5 +1,4 @@
 import { CourseCategory } from '@constant/CourseConstant';
-import { changeDateToString } from '@util/dateFormatter';
 
 export class Course {
   private id?: number;
@@ -9,8 +8,8 @@ export class Course {
   private description: string;
   private price: number;
   private category: CourseCategory;
-  private createDate: string;
-  private updateDate: string;
+  private createDate?: Date;
+  private updateDate?: Date;
 
   constructor(
     instructorId: number,
@@ -18,8 +17,8 @@ export class Course {
     description: string,
     price: number,
     category: CourseCategory,
-    createDate: Date,
-    updateDate: Date,
+    createDate?: Date,
+    updateDate?: Date,
     id?: number,
     isPublic?: boolean,
   ) {
@@ -30,8 +29,8 @@ export class Course {
     this.description = description;
     this.price = price;
     this.category = category;
-    this.createDate = changeDateToString(createDate);
-    this.updateDate = changeDateToString(updateDate);
+    this.createDate = createDate;
+    this.updateDate = updateDate;
   }
 
   public get itemsForCourseDetailsResponse() {

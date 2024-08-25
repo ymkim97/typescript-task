@@ -8,8 +8,8 @@ export default class GetCourseDetailsResponse {
   category: CourseCategory;
   price: number;
   studentCount: number;
-  publishedOn: string;
-  updatedOn: string;
+  publishedOn?: Date;
+  updatedOn?: Date;
   students: StudentClass[];
 
   constructor(
@@ -18,9 +18,9 @@ export default class GetCourseDetailsResponse {
     category: CourseCategory,
     price: number,
     studentCount: number,
-    publishedOn: string,
-    updatedOn: string,
     students: StudentClass[],
+    publishedOn?: Date,
+    updatedOn?: Date,
   ) {
     this.title = title;
     this.description = description;
@@ -44,9 +44,9 @@ export default class GetCourseDetailsResponse {
       courseItems.category,
       courseItems.price,
       studentClasses.length,
+      studentClasses,
       courseItems.createDate,
       courseItems.updateDate,
-      studentClasses,
     );
   }
 }

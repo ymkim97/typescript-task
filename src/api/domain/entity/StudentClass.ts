@@ -1,12 +1,10 @@
-import { changeDateToString } from '@util/dateFormatter';
-
 export class StudentClass {
   private nickname: string;
-  private createDate: string;
+  private createDate: Date;
 
   constructor(nickname: string, createDate: Date) {
     this.nickname = nickname;
-    this.createDate = changeDateToString(createDate);
+    this.createDate = createDate;
   }
 
   public static from(studentAndClassMysql: StudentAndClassMysql): StudentClass {
