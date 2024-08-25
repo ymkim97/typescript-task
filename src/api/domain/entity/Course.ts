@@ -1,8 +1,9 @@
 import { CourseCategory } from '@constant/CourseConstant';
+import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 
 export class Course {
   private id?: number;
-  private instructorId: number;
+  private _instructorId: number;
   private isPublic?: boolean;
   private title: string;
   private description: string;
@@ -23,7 +24,7 @@ export class Course {
     isPublic?: boolean,
   ) {
     this.id = id;
-    this.instructorId = instructorId;
+    this._instructorId = instructorId;
     this.isPublic = isPublic;
     this.title = title;
     this.description = description;
@@ -46,12 +47,31 @@ export class Course {
 
   public get itemsForSave() {
     return {
-      instructorId: this.instructorId,
+      instructorId: this._instructorId,
       title: this.title,
       description: this.description,
       price: this.price,
       category: this.category,
     };
+  }
+
+  public get itemsForUpdate() {
+    return {
+      title: this.title,
+      description: this.description,
+      price: this.price,
+      id: this.id,
+    };
+  }
+
+  public get instructorId() {
+    return this._instructorId;
+  }
+
+  public set update(request: UpdateCourseRequest) {
+    this.title = request.title;
+    this.description = request.description;
+    this.price = request.price;
   }
 
   public static from(courseMysql: CourseMysql): Course {

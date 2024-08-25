@@ -15,7 +15,7 @@ export default class CourseRepository {
     this.mysqlPool = mysqlPool;
   }
 
-  public async save(course: Course): Promise<number | void> {
+  public async save(course: Course): Promise<number> {
     const connection = await this.mysqlPool.getConnection();
 
     try {
@@ -29,7 +29,7 @@ export default class CourseRepository {
     } catch (e) {
       throw new SqlError(
         ERROR_MESSAGE.SQL_WRITE_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER,
         e as Error,
       );
     } finally {
@@ -37,7 +37,7 @@ export default class CourseRepository {
     }
   }
 
-  public async saveAll(courses: Course[]): Promise<number[] | void> {
+  public async saveAll(courses: Course[]): Promise<number[]> {
     const connection = await this.mysqlPool.getConnection();
 
     try {
@@ -63,7 +63,7 @@ export default class CourseRepository {
 
       throw new SqlError(
         ERROR_MESSAGE.SQL_WRITE_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER,
         e as Error,
       );
     } finally {
@@ -89,9 +89,24 @@ export default class CourseRepository {
     } catch (e) {
       throw new SqlError(
         ERROR_MESSAGE.SQL_READ_ERROR,
-        ERROR_CODE.SERVER_ERROR,
+        ERROR_CODE.SERVER,
         e as Error,
       );
+    } finally {
+      connection.release();
+    }
+  }
+
+  public async update(course: Course): Promise<void> {
+    const connection = await this.mysqlPool.getConnection();
+
+    try {
+      const sql =
+        'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?';
+      const value = Object.values(course.itemsForUpdate);
+
+      const [result] = await connection.execute<ResultSetHeader>(sql, value);
+    } catch (e) {
     } finally {
       connection.release();
     }

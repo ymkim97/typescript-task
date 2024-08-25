@@ -3,6 +3,7 @@ import { singleton } from 'tsyringe';
 import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import NotFoundError from '@error/NotFoundError';
 import RequestError from '@error/RequestError';
 import CourseRepository from '@repository/CourseRepository';
@@ -23,7 +24,7 @@ export default class CourseService {
 
   public async registerNew(
     createCourseRequest: CreateCourseRequest,
-  ): Promise<number | void> {
+  ): Promise<number> {
     const instructorId = createCourseRequest.instructorId;
     await this.validateInstructor(instructorId);
 
@@ -35,11 +36,19 @@ export default class CourseService {
 
   public async registerNewBulk(
     createBulkCourseRequest: CreateBulkCourseRequest,
-  ): Promise<number[] | void> {
+  ): Promise<number[]> {
     const requests = createBulkCourseRequest.createCourseRequest;
-    const instructorId = requests[0].instructorId;
+    const firstInstructorId = requests[0].instructorId;
 
-    await this.validateInstructorIds(instructorId, requests);
+    requests.forEach((x) => {
+      if (x.instructorId !== firstInstructorId)
+        throw new RequestError(
+          ERROR_MESSAGE.INSTRUCTOR_ID_NOT_UNIFIED,
+          ERROR_CODE.REQUEST,
+        );
+    });
+
+    await this.validateInstructor(firstInstructorId);
 
     const courses = requests.map((x) => x.toEntity());
     const newCourseIds = await this.courseRepository.saveAll(courses);
@@ -47,19 +56,28 @@ export default class CourseService {
     return newCourseIds;
   }
 
-  private async validateInstructorIds(
-    firstId: number,
-    requests: CreateCourseRequest[],
+  public async update(
+    id: number,
+    updateCourseRequest: UpdateCourseRequest,
   ): Promise<void> {
-    requests.forEach((x) => {
-      if (x.instructorId !== firstId)
-        throw new RequestError(
-          ERROR_MESSAGE.INSTRUCTOR_ID_NOT_UNIFIED,
-          ERROR_CODE.REQUEST_ERROR,
-        );
-    });
+    const course = await this.courseRepository.findById(id);
 
-    await this.validateInstructor(firstId);
+    if (!course) {
+      throw new NotFoundError(
+        ERROR_MESSAGE.COURSE_NOT_FOUND,
+        ERROR_CODE.NOT_FOUND,
+      );
+    }
+
+    if (course.instructorId !== updateCourseRequest.instructorId) {
+      throw new RequestError(
+        ERROR_MESSAGE.COURSE_FORBIDDEN,
+        ERROR_CODE.FORBIDDEN,
+      );
+    }
+
+    course.update = updateCourseRequest;
+    await this.courseRepository.update(course);
   }
 
   private async validateInstructor(instructorId: number): Promise<void> {
@@ -69,7 +87,7 @@ export default class CourseService {
     if (!isInstructorRegistered) {
       throw new NotFoundError(
         ERROR_MESSAGE.INSTRUCTOR_NOT_FOUND,
-        ERROR_CODE.NOT_FOUND_ERROR,
+        ERROR_CODE.NOT_FOUND,
       );
     }
   }
