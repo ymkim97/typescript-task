@@ -5,7 +5,8 @@ import NotFoundError from '@error/NotFoundError';
 import RequestError from '@error/RequestError';
 import SqlError from '@error/SqlError';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
+import { STATUS_CODE } from '@constant/StatusConstant';
 import CourseController from '@controller/CourseController';
 import CourseRoute from '@route/CourseRoute';
 import logger from '@util/logger';
@@ -26,20 +27,24 @@ export default async (expressApp: Application): Promise<void> => {
       logger.error(err.stack);
 
       if (err instanceof SqlError) {
-        return res.status(ERROR_CODE.SERVER).send(err.message);
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send(err.message);
       } else if (err instanceof RequestError) {
         if (err.validationMessages) {
           logger.error(err.validationMessages);
 
-          return res.status(ERROR_CODE.REQUEST).send(err.validationMessages);
+          return res
+            .status(STATUS_CODE.BAD_REQUEST)
+            .send(err.validationMessages);
         } else {
-          return res.status(ERROR_CODE.REQUEST).send(err.message);
+          return res.status(STATUS_CODE.BAD_REQUEST).send(err.message);
         }
       } else if (err instanceof NotFoundError) {
-        return res.status(ERROR_CODE.NOT_FOUND).send(err.message);
+        return res.status(STATUS_CODE.NOT_FOUND).send(err.message);
       }
 
-      return res.status(ERROR_CODE.SERVER).send(ERROR_MESSAGE.SERVER_ERROR);
+      return res
+        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+        .send(ERROR_MESSAGE.SERVER_ERROR);
     },
   );
 };

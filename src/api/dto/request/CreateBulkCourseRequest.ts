@@ -1,7 +1,7 @@
 import { Expose, Type } from 'class-transformer';
 import { ArrayMaxSize, ArrayMinSize, ValidateNested } from 'class-validator';
 
-import { ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import CreateCourseRequest from './CreateCourseRequest';
 
 export default class CreateBulkCourseRequest {

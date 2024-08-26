@@ -1,6 +1,7 @@
 import { PoolConnection } from 'mysql2/promise';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
+import { STATUS_CODE } from '@constant/StatusConstant';
 import SqlError from '@error/SqlError';
 
 export async function executeReadQuery<T>(
@@ -12,7 +13,7 @@ export async function executeReadQuery<T>(
   } catch (e) {
     throw new SqlError(
       ERROR_MESSAGE.SQL_READ_ERROR,
-      ERROR_CODE.SERVER,
+      STATUS_CODE.INTERNAL_SERVER_ERROR,
       e as Error,
     );
   } finally {
@@ -33,7 +34,7 @@ export async function executeWriteQuery<T>(
   } catch (e) {
     throw new SqlError(
       ERROR_MESSAGE.SQL_WRITE_ERROR,
-      ERROR_CODE.SERVER,
+      STATUS_CODE.INTERNAL_SERVER_ERROR,
       e as Error,
     );
   } finally {

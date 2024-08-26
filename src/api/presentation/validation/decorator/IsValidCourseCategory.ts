@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 
 import { CATEGORY_VALUES } from '@constant/CourseConstant';
-import { ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 
 @ValidatorConstraint({ async: true })
 class IsValidCategoryConstraint implements ValidatorConstraintInterface {

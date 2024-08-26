@@ -2,7 +2,8 @@ import { plainToInstance } from 'class-transformer';
 import { validateOrReject, ValidationError } from 'class-validator';
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
+import { STATUS_CODE } from '@constant/StatusConstant';
 import RequestError from '@error/RequestError';
 
 function formatValidationErrors(errors: ValidationError[]): string[] {
@@ -39,7 +40,7 @@ export function validateRequestBody(type: any): RequestHandler {
       );
       const requestError = new RequestError(
         ERROR_MESSAGE.REQUEST_VALIDATION,
-        ERROR_CODE.REQUEST,
+        STATUS_CODE.BAD_REQUEST,
       );
       requestError.validationMessages = validationMessages;
 
