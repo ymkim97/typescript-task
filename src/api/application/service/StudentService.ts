@@ -22,8 +22,6 @@ export default class StudentService {
     return await this.studentRepository.save(student).catch((e: SqlError) => {
       const mysqlError = e.originalError as any;
 
-      console.log(mysqlError);
-
       if (mysqlError.errno === DUPLICATE_ENTRY) {
         throw new RequestError(
           ERROR_MESSAGE.DUPLICATE_EMAIL,

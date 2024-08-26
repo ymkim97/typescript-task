@@ -1,4 +1,3 @@
-import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
 import { Instructor, InstructorMysql } from '@entity/Instructor';
@@ -18,16 +17,13 @@ export default class InstructorRepository {
 
     return await executeReadQuery(connection, async () => {
       const sql = 'SELECT * FROM instructor WHERE id = ?;';
-      const values = [id];
+      const value = [id];
 
-      const [result] = await connection.execute<RowDataPacket[]>(sql, values);
+      const [result] = await connection.query<InstructorMysql[]>(sql, value);
 
       if (result.length === 0) return;
 
-      const instructorMysql = result[0] as InstructorMysql;
-      const instructor = Instructor.from(instructorMysql);
-
-      return instructor;
+      return Instructor.from(result[0]);
     });
   }
 }

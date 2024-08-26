@@ -1,7 +1,7 @@
 import { singleton } from 'tsyringe';
 
 import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
-import { FOREIGN_KEY_CONSTRAINT } from '@constant/mysqlErrors';
+import { DUPLICATE_ENTRY, FOREIGN_KEY_CONSTRAINT } from '@constant/MysqlErrors';
 import { STATUS_CODE } from '@constant/StatusConstant';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
@@ -34,9 +34,17 @@ export default class CourseService {
     await this.validateInstructor(instructorId);
 
     const course = createCourseRequest.toEntity();
-    const newCourseId = await this.courseRepository.save(course);
 
-    return newCourseId;
+    return await this.courseRepository.save(course).catch((e: SqlError) => {
+      const mysqlError = e.originalError as any;
+
+      if (mysqlError.errno === DUPLICATE_ENTRY) {
+        throw new RequestError(
+          ERROR_MESSAGE.COURSE_DUPLICATE_TITLE,
+          STATUS_CODE.BAD_REQUEST,
+        );
+      } else throw e;
+    });
   }
 
   public async registerNewBulk(
@@ -44,6 +52,7 @@ export default class CourseService {
   ): Promise<number[]> {
     const requests = createBulkCourseRequest.createCourseRequest;
     const firstInstructorId = requests[0].instructorId;
+    const titles: string[] = [];
 
     requests.forEach((x) => {
       if (x.instructorId !== firstInstructorId)
@@ -51,14 +60,15 @@ export default class CourseService {
           ERROR_MESSAGE.INSTRUCTOR_ID_NOT_UNIFIED,
           STATUS_CODE.BAD_REQUEST,
         );
+      titles.push(x.title);
     });
 
     await this.validateInstructor(firstInstructorId);
+    await this.checkTitles(titles);
 
-    const courses = requests.map((x) => x.toEntity());
-    const newCourseIds = await this.courseRepository.saveAll(courses);
+    const coursesToSave = requests.map((x) => x.toEntity());
 
-    return newCourseIds;
+    return await this.courseRepository.saveAll(coursesToSave);
   }
 
   public async update(
@@ -80,6 +90,7 @@ export default class CourseService {
     );
 
     course.update = updateCourseRequest;
+
     await this.courseRepository.update(course);
   }
 
@@ -158,6 +169,22 @@ export default class CourseService {
       throw new RequestError(
         ERROR_MESSAGE.COURSE_FORBIDDEN,
         STATUS_CODE.FORBIDDEN,
+      );
+    }
+  }
+
+  private async checkTitles(titles: string[]) {
+    const duplicatedCourse =
+      await this.courseRepository.findAllByTitles(titles);
+
+    if (duplicatedCourse) {
+      const duplicatedTitles: string[] = [ERROR_MESSAGE.COURSE_DUPLICATE_TITLE];
+      duplicatedCourse.forEach((x) => duplicatedTitles.push(x.title));
+
+      throw new RequestError(
+        ERROR_MESSAGE.COURSE_DUPLICATE_TITLE,
+        STATUS_CODE.BAD_REQUEST,
+        duplicatedTitles,
       );
     }
   }

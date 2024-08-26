@@ -1,3 +1,5 @@
+import { RowDataPacket } from 'mysql2';
+
 export class Instructor {
   private id: number;
   private name: string;
@@ -12,7 +14,7 @@ export class Instructor {
   }
 }
 
-export interface InstructorMysql {
+export interface InstructorMysql extends RowDataPacket {
   id: number;
   name: string;
 }

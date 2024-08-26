@@ -1,3 +1,5 @@
+import { RowDataPacket } from 'mysql2';
+
 export class StudentClass {
   private nickname: string;
   private createDate: Date;
@@ -15,7 +17,7 @@ export class StudentClass {
   }
 }
 
-export interface StudentAndClassMysql {
+export interface StudentAndClassMysql extends RowDataPacket {
   nickname: string;
   create_date: Date;
 }

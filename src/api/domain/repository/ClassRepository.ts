@@ -1,4 +1,3 @@
-import { RowDataPacket } from 'mysql2';
 import { singleton } from 'tsyringe';
 
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
@@ -21,12 +20,14 @@ export default class ClassRepository {
         'SELECT st.nickname, cl.create_date ' +
         'FROM student st LEFT JOIN class cl ON st.id = cl.student_id ' +
         'WHERE cl.course_id = ?;';
-      const values = [id];
+      const value = [id];
 
-      const [result] = await connection.execute<RowDataPacket[]>(sql, values);
-      const withStudents = result as StudentAndClassMysql[];
+      const [result] = await connection.query<StudentAndClassMysql[]>(
+        sql,
+        value,
+      );
 
-      return withStudents.map(StudentClass.from);
+      return result.map(StudentClass.from);
     });
   }
 }

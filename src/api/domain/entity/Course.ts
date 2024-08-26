@@ -1,3 +1,5 @@
+import { RowDataPacket } from 'mysql2';
+
 import { CourseCategory } from '@constant/CourseConstant';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 
@@ -5,7 +7,7 @@ export class Course {
   private _id?: number;
   private _instructorId: number;
   private _isPublic?: boolean;
-  private title: string;
+  private _title: string;
   private description: string;
   private price: number;
   private category: CourseCategory;
@@ -26,7 +28,7 @@ export class Course {
     this._id = id;
     this._instructorId = instructorId;
     this._isPublic = isPublic;
-    this.title = title;
+    this._title = title;
     this.description = description;
     this.price = price;
     this.category = category;
@@ -36,7 +38,7 @@ export class Course {
 
   public get itemsForCourseDetailsResponse() {
     return {
-      title: this.title,
+      title: this._title,
       description: this.description,
       category: this.category,
       price: this.price,
@@ -48,7 +50,7 @@ export class Course {
   public get itemsForSave() {
     return {
       instructorId: this._instructorId,
-      title: this.title,
+      title: this._title,
       description: this.description,
       price: this.price,
       category: this.category,
@@ -57,7 +59,7 @@ export class Course {
 
   public get itemsForUpdate() {
     return {
-      title: this.title,
+      title: this._title,
       description: this.description,
       price: this.price,
       id: this._id,
@@ -76,8 +78,12 @@ export class Course {
     return this._id;
   }
 
+  public get title() {
+    return this._title;
+  }
+
   public set update(request: UpdateCourseRequest) {
-    this.title = request.title;
+    this._title = request.title;
     this.description = request.description;
     this.price = request.price;
   }
@@ -97,7 +103,7 @@ export class Course {
   }
 }
 
-export interface CourseMysql {
+export interface CourseMysql extends RowDataPacket {
   id: number;
   instructor_id: number;
   is_public: boolean;

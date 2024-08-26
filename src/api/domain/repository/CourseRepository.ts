@@ -1,4 +1,4 @@
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
 import { Course, CourseMysql } from '@entity/Course';
@@ -37,8 +37,6 @@ export default class CourseRepository {
 
       const [result] = await connection.query<ResultSetHeader>(sql, [value]);
 
-      await connection.commit();
-
       const insertIds = Array.from(
         { length: result.affectedRows },
         (_, x) => result.insertId + x,
@@ -53,16 +51,26 @@ export default class CourseRepository {
 
     return await executeReadQuery(connection, async () => {
       const sql = 'SELECT * FROM course WHERE id = ?;';
-      const values = [id];
+      const value = [id];
 
-      const [result] = await connection.execute<RowDataPacket[]>(sql, values);
+      const [result] = await connection.query<CourseMysql[]>(sql, value);
 
       if (result.length === 0) return;
 
-      const courseMysql = result[0] as CourseMysql;
-      const course = Course.from(courseMysql);
+      return Course.from(result[0]);
+    });
+  }
 
-      return course;
+  public async findAllByTitles(titles: string[]): Promise<Course[] | void> {
+    const connection = await this.mysqlPool.getConnection();
+
+    return await executeReadQuery(connection, async () => {
+      const sql = 'SELECT * FROM course WHERE title IN (?)';
+      const value = Object.values(titles);
+
+      const [result] = await connection.query<CourseMysql[]>(sql, [value]);
+
+      return result.map((x) => Course.from(x));
     });
   }
 
@@ -74,7 +82,7 @@ export default class CourseRepository {
         'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?';
       const value = Object.values(course.itemsForUpdate);
 
-      await connection.execute<ResultSetHeader>(sql, value);
+      await connection.query<ResultSetHeader>(sql, value);
     });
   }
 
@@ -85,7 +93,7 @@ export default class CourseRepository {
       const sql = 'UPDATE course SET is_public = true WHERE id = ?';
       const value = [course.id];
 
-      await connection.execute<ResultSetHeader>(sql, value);
+      await connection.query<ResultSetHeader>(sql, value);
     });
   }
 
@@ -96,7 +104,7 @@ export default class CourseRepository {
       const sql = 'DELETE FROM course WHERE id = ?';
       const value = [course.id];
 
-      await connection.execute<ResultSetHeader>(sql, value);
+      await connection.query<ResultSetHeader>(sql, value);
     });
   }
 }

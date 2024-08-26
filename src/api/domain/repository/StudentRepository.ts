@@ -1,9 +1,9 @@
+import { ResultSetHeader } from 'mysql2';
 import { singleton } from 'tsyringe';
 
 import { Student } from '@entity/Student';
 import Mysql from '@loader/Mysql';
 import { executeWriteQuery } from '@util/mysqlUtil';
-import { ResultSetHeader } from 'mysql2';
 
 @singleton()
 export default class StudentRepository {
@@ -20,7 +20,7 @@ export default class StudentRepository {
       const sql = 'INSERT INTO student (email, nickname) VALUES (?, ?)';
       const value = Object.values(student.itemsForSave);
 
-      const [result] = await connection.execute<ResultSetHeader>(sql, value);
+      const [result] = await connection.query<ResultSetHeader>(sql, value);
 
       return result.insertId;
     });
