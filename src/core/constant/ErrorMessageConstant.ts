@@ -11,7 +11,7 @@ export const ERROR_MESSAGE = {
   COURSE_BULK_TOO_MUCH: '최대 10개의 강의를 등록할 수 있습니다.',
   COURSE_BULK_EMPTY: '최소 1개 이상의 강의를 등록해야 합니다.',
   COURSE_NOT_FOUND: '존재하지 않는 강의입니다.',
-  COURSE_FORBIDDEN: '해당 강의의 강사만 수정할 수 있습니다.',
+  COURSE_FORBIDDEN: '해당 강의의 강사만 수정 또는 삭제할 수 있습니다.',
   COURSE_ALREADY_OPEN: '이미 오픈된 강의입니다.',
   COURSE_HAS_STUDENTS: '이미 수강생이 있는 경우 삭제할 수 없습니다. ',
   COURSE_DUPLICATE_TITLE: '중복된 강의명입니다.',

@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsEmail, Length } from 'class-validator';
 
 import { Student } from '@entity/Student';
 
@@ -10,7 +10,6 @@ export default class SignUpStudentRequest {
   email: string;
 
   @Expose()
-  @IsString()
   @Length(1, 30)
   nickname: string;
 

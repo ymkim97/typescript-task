@@ -36,8 +36,6 @@ export default async (expressApp: Application): Promise<void> => {
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send(err.message);
       } else if (err instanceof RequestError) {
         if (err.validationMessages) {
-          logger.error(err.validationMessages);
-
           return res
             .status(STATUS_CODE.BAD_REQUEST)
             .send(err.validationMessages);
