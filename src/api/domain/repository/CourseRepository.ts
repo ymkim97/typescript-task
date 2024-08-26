@@ -77,4 +77,15 @@ export default class CourseRepository {
       await connection.execute<ResultSetHeader>(sql, value);
     });
   }
+
+  public async updatePublic(course: Course): Promise<void> {
+    const connection = await this.mysqlPool.getConnection();
+
+    return await executeWriteQuery(connection, async () => {
+      const sql = 'UPDATE course SET is_public = true WHERE id = ?';
+      const value = [course.id];
+
+      await connection.execute<ResultSetHeader>(sql, value);
+    });
+  }
 }

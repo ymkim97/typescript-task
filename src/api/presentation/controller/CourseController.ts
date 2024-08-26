@@ -4,6 +4,7 @@ import { singleton } from 'tsyringe';
 
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import CourseService from '@service/CourseService';
 import SearchService from '@service/SearchService';
@@ -60,5 +61,14 @@ export default class CourseController {
     await this.courseService.update(courseId, updateCourseRequest);
 
     res.status(200).send(JSON.stringify({ updatedCourseId: courseId }));
+  }
+
+  public async openCourse(req: Request, res: Response): Promise<void> {
+    const courseId = parseInt(req.params.id, 10);
+    const openCourseRequest = plainToInstance(OpenCourseRequest, req.body);
+
+    await this.courseService.open(courseId, openCourseRequest);
+
+    res.status(200).send(JSON.stringify({ openedCourseId: courseId }));
   }
 }

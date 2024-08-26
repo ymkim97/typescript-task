@@ -2,9 +2,9 @@ import { CourseCategory } from '@constant/CourseConstant';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 
 export class Course {
-  private id?: number;
+  private _id?: number;
   private _instructorId: number;
-  private isPublic?: boolean;
+  private _isPublic?: boolean;
   private title: string;
   private description: string;
   private price: number;
@@ -23,9 +23,9 @@ export class Course {
     id?: number,
     isPublic?: boolean,
   ) {
-    this.id = id;
+    this._id = id;
     this._instructorId = instructorId;
-    this.isPublic = isPublic;
+    this._isPublic = isPublic;
     this.title = title;
     this.description = description;
     this.price = price;
@@ -60,12 +60,20 @@ export class Course {
       title: this.title,
       description: this.description,
       price: this.price,
-      id: this.id,
+      id: this._id,
     };
   }
 
   public get instructorId() {
     return this._instructorId;
+  }
+
+  public get isPublic() {
+    return this._isPublic;
+  }
+
+  public get id() {
+    return this._id;
   }
 
   public set update(request: UpdateCourseRequest) {

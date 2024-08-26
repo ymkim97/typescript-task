@@ -1,8 +1,10 @@
 import { singleton } from 'tsyringe';
 
-import { ERROR_CODE, ERROR_MESSAGE } from '@constant/ErrorConstant';
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
+import { STATUS_CODE } from '@constant/StatusConstant';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import NotFoundError from '@error/NotFoundError';
 import RequestError from '@error/RequestError';
@@ -44,7 +46,7 @@ export default class CourseService {
       if (x.instructorId !== firstInstructorId)
         throw new RequestError(
           ERROR_MESSAGE.INSTRUCTOR_ID_NOT_UNIFIED,
-          ERROR_CODE.REQUEST,
+          STATUS_CODE.BAD_REQUEST,
         );
     });
 
@@ -65,19 +67,42 @@ export default class CourseService {
     if (!course) {
       throw new NotFoundError(
         ERROR_MESSAGE.COURSE_NOT_FOUND,
-        ERROR_CODE.NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
       );
     }
 
-    if (course.instructorId !== updateCourseRequest.instructorId) {
-      throw new RequestError(
-        ERROR_MESSAGE.COURSE_FORBIDDEN,
-        ERROR_CODE.FORBIDDEN,
-      );
-    }
+    this.authorizeInstructor(
+      course.instructorId,
+      updateCourseRequest.instructorId,
+    );
 
     course.update = updateCourseRequest;
     await this.courseRepository.update(course);
+  }
+
+  public async open(courseId: number, openCourseRequest: OpenCourseRequest) {
+    const course = await this.courseRepository.findById(courseId);
+
+    if (!course) {
+      throw new NotFoundError(
+        ERROR_MESSAGE.COURSE_NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
+      );
+    }
+
+    this.authorizeInstructor(
+      course.instructorId,
+      openCourseRequest.instructorId,
+    );
+
+    if (course.isPublic) {
+      throw new RequestError(
+        ERROR_MESSAGE.COURSE_ALREADY_OPEN,
+        STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
+    await this.courseRepository.updatePublic(course);
   }
 
   private async validateInstructor(instructorId: number): Promise<void> {
@@ -87,7 +112,19 @@ export default class CourseService {
     if (!isInstructorRegistered) {
       throw new NotFoundError(
         ERROR_MESSAGE.INSTRUCTOR_NOT_FOUND,
-        ERROR_CODE.NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
+      );
+    }
+  }
+
+  private authorizeInstructor(
+    instructorId: number,
+    requestInstructorId: number,
+  ): void {
+    if (instructorId !== requestInstructorId) {
+      throw new RequestError(
+        ERROR_MESSAGE.COURSE_FORBIDDEN,
+        STATUS_CODE.FORBIDDEN,
       );
     }
   }
