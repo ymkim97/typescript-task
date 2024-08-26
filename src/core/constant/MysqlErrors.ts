@@ -1,1 +1,2 @@
 export const FOREIGN_KEY_CONSTRAINT = 1451;
+export const DUPLICATE_ENTRY = 1062;

@@ -8,7 +8,9 @@ import SqlError from '@error/SqlError';
 import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import { STATUS_CODE } from '@constant/StatusConstant';
 import CourseController from '@controller/CourseController';
+import StudentController from '@controller/StudentController';
 import CourseRoute from '@route/CourseRoute';
+import StudentRoute from '@route/StudentRoute';
 import logger from '@util/logger';
 import Mysql from './Mysql';
 
@@ -20,7 +22,11 @@ export default async (expressApp: Application): Promise<void> => {
   container.registerSingleton(CourseController);
   const courseRoute = container.resolve(CourseRoute);
 
+  container.registerSingleton(StudentController);
+  const studentRoute = container.resolve(StudentRoute);
+
   expressApp.use('/courses', courseRoute.routes);
+  expressApp.use('/students', studentRoute.routes);
 
   expressApp.use(
     (err: Error, req: Request, res: Response, next: NextFunction) => {

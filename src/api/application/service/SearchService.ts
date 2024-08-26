@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 
-import GetCourseDetailsResponse from '@dto/response/GetCourseDetailsResponse';
+import CourseDetailsResponse from '@dto/response/CourseDetailsResponse';
 import ClassRepository from '@repository/ClassRepository';
 import CourseRepository from '@repository/CourseRepository';
 
@@ -19,7 +19,7 @@ export default class SearchService {
 
   public async getCourseDetails(
     id: number,
-  ): Promise<GetCourseDetailsResponse | void> {
+  ): Promise<CourseDetailsResponse | void> {
     const course = await this.courseRepository.findById(id);
 
     if (!course) return;
@@ -27,9 +27,6 @@ export default class SearchService {
     const classAndStudents =
       await this.classRepository.findWithStudentsByCourseId(id);
 
-    return GetCourseDetailsResponse.mapToCourseDetailsResponse(
-      course,
-      classAndStudents,
-    );
+    return CourseDetailsResponse.from(course, classAndStudents);
   }
 }
