@@ -88,4 +88,15 @@ export default class CourseRepository {
       await connection.execute<ResultSetHeader>(sql, value);
     });
   }
+
+  public async delete(course: Course): Promise<void> {
+    const connection = await this.mysqlPool.getConnection();
+
+    return await executeWriteQuery(connection, async () => {
+      const sql = 'DELETE FROM course WHERE id = ?';
+      const value = [course.id];
+
+      await connection.execute<ResultSetHeader>(sql, value);
+    });
+  }
 }

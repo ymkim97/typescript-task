@@ -4,6 +4,7 @@ import { singleton } from 'tsyringe';
 import CourseController from '@controller/CourseController';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import DeleteCourseRequest from '@dto/request/DeleteCourseRequest';
 import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import { validateRequestBody } from '../validation/validateRequestBody';
@@ -68,6 +69,14 @@ export default class CourseRoute {
       validateRequestBody(OpenCourseRequest),
       this.wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.openCourse(req, res);
+      }),
+    );
+
+    this.router.delete(
+      '/:id',
+      validateRequestBody(DeleteCourseRequest),
+      this.wrapAsync(async (req: Request, res: Response) => {
+        await this.courseController.deleteCourse(req, res);
       }),
     );
   }

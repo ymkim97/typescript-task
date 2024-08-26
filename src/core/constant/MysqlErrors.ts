@@ -1,0 +1,1 @@
+export const FOREIGN_KEY_CONSTRAINT = 1451;

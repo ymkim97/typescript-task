@@ -2,8 +2,10 @@ import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
 import { singleton } from 'tsyringe';
 
+import { STATUS_CODE } from '@constant/StatusConstant';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import DeleteCourseRequest from '@dto/request/DeleteCourseRequest';
 import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import CourseService from '@service/CourseService';
@@ -21,7 +23,7 @@ export default class CourseController {
 
   // TODO: 강의 목록 조회
   public async searchCourses(req: Request, res: Response): Promise<void> {
-    res.status(200).send('OK');
+    res.status(STATUS_CODE.OK).send('OK');
   }
 
   public async searchCourse(req: Request, res: Response): Promise<void> {
@@ -29,7 +31,9 @@ export default class CourseController {
     const courseDetailsResponse =
       await this.searchService.getCourseDetails(courseId);
 
-    res.status(200).send(instanceToPlain(courseDetailsResponse) || {});
+    res
+      .status(STATUS_CODE.OK)
+      .send(instanceToPlain(courseDetailsResponse) || {});
   }
 
   public async registerCourse(req: Request, res: Response): Promise<void> {
@@ -37,7 +41,9 @@ export default class CourseController {
     const createdCourseId =
       await this.courseService.registerNew(createCourseRequest);
 
-    res.status(201).send(JSON.stringify({ insertedCourseId: createdCourseId }));
+    res
+      .status(STATUS_CODE.CREATED)
+      .send(JSON.stringify({ insertedCourseId: createdCourseId }));
   }
 
   public async registerBulkCourse(req: Request, res: Response): Promise<void> {
@@ -50,7 +56,7 @@ export default class CourseController {
     );
 
     res
-      .status(201)
+      .status(STATUS_CODE.CREATED)
       .send(JSON.stringify({ insertedCourseIds: createdCourseIds }));
   }
 
@@ -60,7 +66,9 @@ export default class CourseController {
 
     await this.courseService.update(courseId, updateCourseRequest);
 
-    res.status(200).send(JSON.stringify({ updatedCourseId: courseId }));
+    res
+      .status(STATUS_CODE.OK)
+      .send(JSON.stringify({ updatedCourseId: courseId }));
   }
 
   public async openCourse(req: Request, res: Response): Promise<void> {
@@ -69,6 +77,19 @@ export default class CourseController {
 
     await this.courseService.open(courseId, openCourseRequest);
 
-    res.status(200).send(JSON.stringify({ openedCourseId: courseId }));
+    res
+      .status(STATUS_CODE.OK)
+      .send(JSON.stringify({ openedCourseId: courseId }));
+  }
+
+  public async deleteCourse(req: Request, res: Response): Promise<void> {
+    const courseId = parseInt(req.params.id, 10);
+    const deleteCourseRequest = plainToInstance(DeleteCourseRequest, req.body);
+
+    await this.courseService.delete(courseId, deleteCourseRequest);
+
+    res
+      .status(STATUS_CODE.OK)
+      .send(JSON.stringify({ deletedCourseId: courseId }));
   }
 }

@@ -1,13 +1,16 @@
 import { singleton } from 'tsyringe';
 
 import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
+import { FOREIGN_KEY_CONSTRAINT } from '@constant/mysqlErrors';
 import { STATUS_CODE } from '@constant/StatusConstant';
 import CreateBulkCourseRequest from '@dto/request/CreateBulkCourseRequest';
 import CreateCourseRequest from '@dto/request/CreateCourseRequest';
+import DeleteCourseRequest from '@dto/request/DeleteCourseRequest';
 import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 import NotFoundError from '@error/NotFoundError';
 import RequestError from '@error/RequestError';
+import SqlError from '@error/SqlError';
 import CourseRepository from '@repository/CourseRepository';
 import InstructorService from './InstructorService';
 
@@ -103,6 +106,36 @@ export default class CourseService {
     }
 
     await this.courseRepository.updatePublic(course);
+  }
+
+  public async delete(
+    courseId: number,
+    deleteCourseRequest: DeleteCourseRequest,
+  ) {
+    const course = await this.courseRepository.findById(courseId);
+
+    if (!course) {
+      throw new NotFoundError(
+        ERROR_MESSAGE.COURSE_NOT_FOUND,
+        STATUS_CODE.NOT_FOUND,
+      );
+    }
+
+    this.authorizeInstructor(
+      course.instructorId,
+      deleteCourseRequest.instructorId,
+    );
+
+    await this.courseRepository.delete(course).catch((e: SqlError) => {
+      const mysqlError = e.originalError as any;
+
+      if (mysqlError.errno === FOREIGN_KEY_CONSTRAINT) {
+        throw new RequestError(
+          ERROR_MESSAGE.COURSE_HAS_STUDENTS,
+          STATUS_CODE.BAD_REQUEST,
+        );
+      } else throw e;
+    });
   }
 
   private async validateInstructor(instructorId: number): Promise<void> {
