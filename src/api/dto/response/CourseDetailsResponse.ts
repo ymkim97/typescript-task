@@ -2,7 +2,7 @@ import { CourseCategory } from '@constant/CourseConstant';
 import { Course } from '@entity/Course';
 import { StudentClass } from '@entity/StudentClass';
 
-export default class GetCourseDetailsResponse {
+export default class CourseDetailsResponse {
   title: string;
   description: string;
   category: CourseCategory;
@@ -32,13 +32,13 @@ export default class GetCourseDetailsResponse {
     this.students = students;
   }
 
-  public static mapToCourseDetailsResponse(
+  public static from(
     course: Course,
     studentClasses: StudentClass[],
-  ): GetCourseDetailsResponse {
+  ): CourseDetailsResponse {
     const courseItems = course.itemsForCourseDetailsResponse;
 
-    return new GetCourseDetailsResponse(
+    return new CourseDetailsResponse(
       courseItems.title,
       courseItems.description,
       courseItems.category,

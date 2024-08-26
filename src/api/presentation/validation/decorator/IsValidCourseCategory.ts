@@ -16,7 +16,7 @@ class IsValidCategoryConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(args: ValidationArguments): string {
-    return ERROR_MESSAGE.INVALID_COURSE_CATEGORY;
+    return ERROR_MESSAGE.COURSE_INVALID_CATEGORY;
   }
 }
 

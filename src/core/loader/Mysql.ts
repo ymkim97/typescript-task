@@ -40,7 +40,7 @@ export default class Mysql {
 
       conn.release();
     } catch (e) {
-      logger.error('Database Connection Test: FAIL', e);
+      logger.error('Database Connection Test: FAIL');
 
       throw e;
     }

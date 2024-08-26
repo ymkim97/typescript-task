@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import { singleton } from 'tsyringe';
 
 import CourseController from '@controller/CourseController';
@@ -7,7 +7,8 @@ import CreateCourseRequest from '@dto/request/CreateCourseRequest';
 import DeleteCourseRequest from '@dto/request/DeleteCourseRequest';
 import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
-import { validateRequestBody } from '../validation/validateRequestBody';
+import wrapAsync from '@util/wrapAsync';
+import validateRequestBody from '../validation/validateRequestBody';
 
 @singleton()
 export default class CourseRoute {
@@ -28,14 +29,14 @@ export default class CourseRoute {
   private initializeRoutes(): void {
     this.router.get(
       '/',
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.searchCourses(req, res);
       }),
     );
 
     this.router.get(
       '/:id',
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.searchCourse(req, res);
       }),
     );
@@ -43,7 +44,7 @@ export default class CourseRoute {
     this.router.post(
       '/',
       validateRequestBody(CreateCourseRequest),
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.registerCourse(req, res);
       }),
     );
@@ -51,7 +52,7 @@ export default class CourseRoute {
     this.router.post(
       '/bulk',
       validateRequestBody(CreateBulkCourseRequest),
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.registerBulkCourse(req, res);
       }),
     );
@@ -59,7 +60,7 @@ export default class CourseRoute {
     this.router.put(
       '/:id',
       validateRequestBody(UpdateCourseRequest),
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.updateCourse(req, res);
       }),
     );
@@ -67,7 +68,7 @@ export default class CourseRoute {
     this.router.put(
       '/open/:id',
       validateRequestBody(OpenCourseRequest),
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.openCourse(req, res);
       }),
     );
@@ -75,16 +76,9 @@ export default class CourseRoute {
     this.router.delete(
       '/:id',
       validateRequestBody(DeleteCourseRequest),
-      this.wrapAsync(async (req: Request, res: Response) => {
+      wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.deleteCourse(req, res);
       }),
     );
-  }
-
-  private wrapAsync(
-    fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
-  ) {
-    return (req: Request, res: Response, next: NextFunction) =>
-      Promise.resolve(fn(req, res, next)).catch(next);
   }
 }

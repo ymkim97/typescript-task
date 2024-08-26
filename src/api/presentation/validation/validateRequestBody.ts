@@ -24,7 +24,7 @@ function formatValidationErrors(errors: ValidationError[]): string[] {
   return errorMessages;
 }
 
-export function validateRequestBody(type: any): RequestHandler {
+export default function validateRequestBody(type: any): RequestHandler {
   return async function (req: Request, res: Response, next: NextFunction) {
     try {
       const plain = plainToInstance(type, req.body, {
