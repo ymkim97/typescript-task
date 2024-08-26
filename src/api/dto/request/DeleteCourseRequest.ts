@@ -4,6 +4,6 @@ import { IsInt, Min } from 'class-validator';
 export default class DeleteCourseRequest {
   @Expose()
   @IsInt()
-  @Min(0)
+  @Min(1)
   instructorId: number;
 }

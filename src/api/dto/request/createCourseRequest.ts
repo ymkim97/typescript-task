@@ -8,7 +8,7 @@ import { Course } from '@entity/Course';
 export default class CreateCourseRequest {
   @Expose()
   @IsInt()
-  @Min(0)
+  @Min(1)
   instructorId: number;
 
   @Expose()
