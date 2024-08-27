@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
 import Mysql from '@loader/Mysql';
-import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
+import { executeQuery } from '@util/mysqlUtil';
 
 @singleton()
 export default class ClassRepository {
@@ -18,7 +18,7 @@ export default class ClassRepository {
   ): Promise<StudentClass[]> {
     const connection = await this.mysqlPool.getConnection();
 
-    return executeQuery(connection, async () => {
+    return await executeQuery(connection, async () => {
       const sql =
         'SELECT st.nickname, cl.create_date ' +
         'FROM student st LEFT JOIN class cl ON st.id = cl.student_id ' +
@@ -36,15 +36,20 @@ export default class ClassRepository {
 
   public async deleteAllByStudentId(
     id: number,
-    connection?: PoolConnection,
+    prevConnection?: PoolConnection,
   ): Promise<void> {
-    if (!connection) connection = await this.mysqlPool.getConnection();
+    const sql = 'DELETE FROM class WHERE id = ?;';
+    const value = [id];
 
-    return executeQueryTransaction(connection, async () => {
-      const sql = 'DELETE FROM class WHERE id = ?;';
-      const value = [id];
-
-      await connection.query<ResultSetHeader>(sql, value);
-    });
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
+      return await executeQuery(connection, async () => {
+        await connection.query<ResultSetHeader>(sql, value);
+      });
+    } else {
+      return await executeQuery(prevConnection, async () => {
+        await prevConnection.query<ResultSetHeader>(sql, value);
+      });
+    }
   }
 }

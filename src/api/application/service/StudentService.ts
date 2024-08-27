@@ -9,6 +9,7 @@ import SqlError from '@error/SqlError';
 import Mysql from '@loader/Mysql';
 import ClassRepository from '@repository/ClassRepository';
 import StudentRepository from '@repository/StudentRepository';
+import { executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class StudentService {
@@ -55,21 +56,17 @@ export default class StudentService {
       );
     }
 
-    try {
-      await connection.beginTransaction();
+    return await executeQueryTransaction(connection, async () => {
       await this.classRepository.deleteAllByStudentId(studentId, connection);
-      await this.studentRepository.delete(student);
-      await connection.commit();
+      await this.studentRepository.delete(student, connection);
 
       return studentId;
-    } catch (e) {
-      throw new SqlError(
-        ERROR_MESSAGE.SQL_ERROR,
-        STATUS_CODE.INTERNAL_SERVER_ERROR,
-        e as Error,
-      );
-    } finally {
-      connection.release();
-    }
+    });
   }
+
+  // public async applyClass(
+  //   applyClassRequest: ApplyClassRequest,
+  // ): Promise<number[]> {
+
+  // }
 }

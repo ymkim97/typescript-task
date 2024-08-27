@@ -45,15 +45,21 @@ export default class StudentRepository {
 
   public async delete(
     student: Student,
-    connection?: PoolConnection,
+    prevConnection?: PoolConnection,
   ): Promise<void> {
-    if (!connection) connection = await this.mysqlPool.getConnection();
+    const sql = 'DELETE FROM student WHERE id = ?';
+    const value = [student.id];
 
-    return await executeQuery(connection, async () => {
-      const sql = 'DELETE FROM student WHERE id = ?';
-      const value = [student.id];
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
 
-      await connection.query<ResultSetHeader>(sql, value);
-    });
+      return await executeQuery(connection, async () => {
+        await connection.query<ResultSetHeader>(sql, value);
+      });
+    } else {
+      return await executeQuery(prevConnection, async () => {
+        await prevConnection.query<ResultSetHeader>(sql, value);
+      });
+    }
   }
 }

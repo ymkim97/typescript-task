@@ -100,7 +100,7 @@ export default class CourseRepository {
   public async delete(course: Course): Promise<void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeQueryTransaction(connection, async () => {
+    return await executeQuery(connection, async () => {
       const sql = 'DELETE FROM course WHERE id = ?';
       const value = [course.id];
 
