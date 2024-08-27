@@ -43,13 +43,12 @@ export default class ClassRepository {
 
     if (!prevConnection) {
       const connection = await this.mysqlPool.getConnection();
+
       return await executeQuery(connection, async () => {
         await connection.query<ResultSetHeader>(sql, value);
       });
     } else {
-      return await executeQuery(prevConnection, async () => {
-        await prevConnection.query<ResultSetHeader>(sql, value);
-      });
+      await prevConnection.query<ResultSetHeader>(sql, value);
     }
   }
 }

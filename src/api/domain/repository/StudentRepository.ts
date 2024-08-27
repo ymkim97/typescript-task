@@ -28,19 +28,25 @@ export default class StudentRepository {
 
   public async findById(
     id: number,
-    connection?: PoolConnection,
+    prevConnection?: PoolConnection,
   ): Promise<Student | void> {
-    if (!connection) connection = await this.mysqlPool.getConnection();
+    const sql = 'SELECT * FROM student WHERE id = ?;';
+    const value = [id];
+    let result: StudentMysql[];
 
-    return await executeQuery(connection, async () => {
-      const sql = 'SELECT * FROM student WHERE id = ?;';
-      const value = [id];
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
 
-      const [result] = await connection.query<StudentMysql[]>(sql, value);
-      if (result.length === 0) return;
+      return await executeQuery(connection, async () => {
+        [result] = await connection.query<StudentMysql[]>(sql, value);
+      });
+    } else {
+      [result] = await prevConnection.query<StudentMysql[]>(sql, value);
+    }
 
-      return Student.from(result[0]);
-    });
+    if (result.length === 0) return;
+
+    return Student.from(result[0]);
   }
 
   public async delete(
@@ -57,9 +63,7 @@ export default class StudentRepository {
         await connection.query<ResultSetHeader>(sql, value);
       });
     } else {
-      return await executeQuery(prevConnection, async () => {
-        await prevConnection.query<ResultSetHeader>(sql, value);
-      });
+      await prevConnection.query<ResultSetHeader>(sql, value);
     }
   }
 }
