@@ -94,7 +94,10 @@ export default class CourseService {
     await this.courseRepository.update(course);
   }
 
-  public async open(courseId: number, openCourseRequest: OpenCourseRequest) {
+  public async open(
+    courseId: number,
+    openCourseRequest: OpenCourseRequest,
+  ): Promise<void> {
     const course = await this.courseRepository.findById(courseId);
 
     if (!course) {
@@ -122,7 +125,7 @@ export default class CourseService {
   public async delete(
     courseId: number,
     deleteCourseRequest: DeleteCourseRequest,
-  ) {
+  ): Promise<void> {
     const course = await this.courseRepository.findById(courseId);
 
     if (!course) {
@@ -173,7 +176,7 @@ export default class CourseService {
     }
   }
 
-  private async checkTitles(titles: string[]) {
+  private async checkTitles(titles: string[]): Promise<void> {
     const duplicatedCourse =
       await this.courseRepository.findAllByTitles(titles);
 

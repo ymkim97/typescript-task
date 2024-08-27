@@ -6,14 +6,24 @@ import { STATUS_CODE } from '@constant/StatusConstant';
 import SignUpStudentRequest from '@dto/request/SignUpStudentRequest';
 import RequestError from '@error/RequestError';
 import SqlError from '@error/SqlError';
+import Mysql from '@loader/Mysql';
+import ClassRepository from '@repository/ClassRepository';
 import StudentRepository from '@repository/StudentRepository';
 
 @singleton()
 export default class StudentService {
   private studentRepository: StudentRepository;
+  private classRepository: ClassRepository;
+  private mysqlPool: Mysql;
 
-  constructor(studentRepository: StudentRepository) {
+  constructor(
+    studentRepository: StudentRepository,
+    classRepository: ClassRepository,
+    mysqlPool: Mysql,
+  ) {
     this.studentRepository = studentRepository;
+    this.classRepository = classRepository;
+    this.mysqlPool = mysqlPool;
   }
 
   public async signUp(signUpRequest: SignUpStudentRequest): Promise<number> {
@@ -29,5 +39,37 @@ export default class StudentService {
         );
       } else throw e;
     });
+  }
+
+  public async withdraw(studentId: number): Promise<number> {
+    const connection = await this.mysqlPool.getConnection();
+    const student = await this.studentRepository.findById(
+      studentId,
+      connection,
+    );
+
+    if (!student) {
+      throw new RequestError(
+        ERROR_MESSAGE.STUDENT_NOT_FOUND,
+        STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
+    try {
+      await connection.beginTransaction();
+      await this.classRepository.deleteAllByStudentId(studentId, connection);
+      await this.studentRepository.delete(student);
+      await connection.commit();
+
+      return studentId;
+    } catch (e) {
+      throw new SqlError(
+        ERROR_MESSAGE.SQL_ERROR,
+        STATUS_CODE.INTERNAL_SERVER_ERROR,
+        e as Error,
+      );
+    } finally {
+      connection.release();
+    }
   }
 }

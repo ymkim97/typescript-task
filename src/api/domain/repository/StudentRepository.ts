@@ -1,9 +1,9 @@
-import { ResultSetHeader } from 'mysql2';
+import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
-import { Student } from '@entity/Student';
+import { Student, StudentMysql } from '@entity/Student';
 import Mysql from '@loader/Mysql';
-import { executeWriteQuery } from '@util/mysqlUtil';
+import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class StudentRepository {
@@ -16,13 +16,44 @@ export default class StudentRepository {
   public async save(student: Student): Promise<number> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
-      const sql = 'INSERT INTO student (email, nickname) VALUES (?, ?)';
+    return await executeQueryTransaction(connection, async () => {
+      const sql = 'INSERT INTO student (email, nickname) VALUES (?, ?);';
       const value = Object.values(student.itemsForSave);
 
       const [result] = await connection.query<ResultSetHeader>(sql, value);
 
       return result.insertId;
+    });
+  }
+
+  public async findById(
+    id: number,
+    connection?: PoolConnection,
+  ): Promise<Student | void> {
+    if (!connection) connection = await this.mysqlPool.getConnection();
+
+    return await executeQuery(connection, async () => {
+      const sql = 'SELECT * FROM student WHERE id = ?;';
+      const value = [id];
+
+      const [result] = await connection.query<StudentMysql[]>(sql, value);
+      if (result.length === 0) return;
+
+      return Student.from(result[0]);
+    });
+  }
+
+  public async delete(
+    student: Student,
+    connection?: PoolConnection,
+  ): Promise<void> {
+    if (!connection) connection = await this.mysqlPool.getConnection();
+
+    return await executeQuery(connection, async () => {
+      const sql = 'DELETE FROM student WHERE id = ?';
+      const value = [student.id];
+
+      await connection.query<ResultSetHeader>(sql, value);
     });
   }
 }

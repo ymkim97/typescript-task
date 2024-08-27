@@ -30,5 +30,12 @@ export default class StudentRoute {
         await this.studentController.signUpStudent(req, res);
       }),
     );
+
+    this.router.delete(
+      '/:id',
+      wrapAsync(async (req: Request, res: Response) => {
+        await this.studentController.withdrawStudent(req, res);
+      }),
+    );
   }
 }

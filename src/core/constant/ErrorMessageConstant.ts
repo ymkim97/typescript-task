@@ -1,6 +1,5 @@
 export const ERROR_MESSAGE = {
-  SQL_READ_ERROR: 'MYSQL 읽기 작업 에러',
-  SQL_WRITE_ERROR: 'MYSQL 쓰기 작업 에러',
+  SQL_ERROR: 'MYSQL 작업 에러',
   SQL_ROLLBACK: '데이터가 Rollback 되었습니다.',
   SERVER_ERROR: '===== Server Error. =====',
   REQUEST_VALIDATION: 'Request body 값이 올바르지 못합니다.',
@@ -17,5 +16,6 @@ export const ERROR_MESSAGE = {
   COURSE_DUPLICATE_TITLE: '중복된 강의명입니다.',
   COURSE_INVALID_CATEGORY: '올바르지 못한 카테고리입니다',
 
+  STUDENT_NOT_FOUND: '존재하지 않는 수강생입니다.',
   DUPLICATE_EMAIL: '중복된 이메일입니다.',
 } as const;

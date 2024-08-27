@@ -1,8 +1,9 @@
+import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
 import Mysql from '@loader/Mysql';
-import { executeReadQuery } from '@util/mysqlUtil';
+import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class ClassRepository {
@@ -12,10 +13,12 @@ export default class ClassRepository {
     this.mysqlPool = mysqlPool;
   }
 
-  public async findWithStudentsByCourseId(id: number): Promise<StudentClass[]> {
+  public async findAllWithStudentsByCourseId(
+    id: number,
+  ): Promise<StudentClass[]> {
     const connection = await this.mysqlPool.getConnection();
 
-    return executeReadQuery(connection, async () => {
+    return executeQuery(connection, async () => {
       const sql =
         'SELECT st.nickname, cl.create_date ' +
         'FROM student st LEFT JOIN class cl ON st.id = cl.student_id ' +
@@ -28,6 +31,20 @@ export default class ClassRepository {
       );
 
       return result.map(StudentClass.from);
+    });
+  }
+
+  public async deleteAllByStudentId(
+    id: number,
+    connection?: PoolConnection,
+  ): Promise<void> {
+    if (!connection) connection = await this.mysqlPool.getConnection();
+
+    return executeQueryTransaction(connection, async () => {
+      const sql = 'DELETE FROM class WHERE id = ?;';
+      const value = [id];
+
+      await connection.query<ResultSetHeader>(sql, value);
     });
   }
 }

@@ -4,7 +4,7 @@ import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import { STATUS_CODE } from '@constant/StatusConstant';
 import SqlError from '@error/SqlError';
 
-export async function executeReadQuery<T>(
+export async function executeQuery<T>(
   connection: PoolConnection,
   repositoryFunction: () => Promise<T>,
 ): Promise<T> {
@@ -12,7 +12,7 @@ export async function executeReadQuery<T>(
     return await repositoryFunction();
   } catch (e) {
     throw new SqlError(
-      ERROR_MESSAGE.SQL_READ_ERROR,
+      ERROR_MESSAGE.SQL_ERROR,
       STATUS_CODE.INTERNAL_SERVER_ERROR,
       e as Error,
     );
@@ -21,7 +21,7 @@ export async function executeReadQuery<T>(
   }
 }
 
-export async function executeWriteQuery<T>(
+export async function executeQueryTransaction<T>(
   connection: PoolConnection,
   repositoryFunction: () => Promise<T>,
 ): Promise<T> {
@@ -33,7 +33,7 @@ export async function executeWriteQuery<T>(
     return result;
   } catch (e) {
     throw new SqlError(
-      ERROR_MESSAGE.SQL_WRITE_ERROR,
+      ERROR_MESSAGE.SQL_ERROR,
       STATUS_CODE.INTERNAL_SERVER_ERROR,
       e as Error,
     );

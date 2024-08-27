@@ -1,12 +1,12 @@
 import { RowDataPacket } from 'mysql2';
 
 export class Student {
-  private id?: number;
+  private _id?: number;
   private email: string;
   private nickname: string;
 
   constructor(email: string, nickname: string, id?: number) {
-    this.id = id;
+    this._id = id;
     this.email = email;
     this.nickname = nickname;
   }
@@ -16,6 +16,10 @@ export class Student {
       email: this.email,
       nickname: this.nickname,
     };
+  }
+
+  public get id() {
+    return this._id;
   }
 
   public static from(studentMysql: StudentMysql) {

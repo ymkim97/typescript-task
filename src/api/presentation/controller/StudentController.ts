@@ -22,4 +22,13 @@ export default class StudentController {
       .status(STATUS_CODE.CREATED)
       .send(JSON.stringify({ signUpId: studentId }));
   }
+
+  public async withdrawStudent(req: Request, res: Response): Promise<void> {
+    const studentId = parseInt(req.params.id, 10);
+    const withdrawId = await this.studentService.withdraw(studentId);
+
+    res
+      .status(STATUS_CODE.OK)
+      .send(JSON.stringify({ removedStudentId: withdrawId }));
+  }
 }

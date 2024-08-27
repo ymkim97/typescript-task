@@ -1,4 +1,4 @@
-import mysql, { PoolOptions } from 'mysql2/promise';
+import mysql, { PoolConnection, PoolOptions } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
 import config from '@config/';
@@ -22,7 +22,7 @@ export default class Mysql {
     this.pool = mysql.createPool(this.access);
   }
 
-  public async getConnection() {
+  public async getConnection(): Promise<PoolConnection> {
     try {
       const conn = await this.pool.getConnection();
 

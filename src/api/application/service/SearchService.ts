@@ -25,7 +25,7 @@ export default class SearchService {
     if (!course) return;
 
     const classAndStudents =
-      await this.classRepository.findWithStudentsByCourseId(id);
+      await this.classRepository.findAllWithStudentsByCourseId(id);
 
     return CourseDetailsResponse.from(course, classAndStudents);
   }

@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 
 import { Course, CourseMysql } from '@entity/Course';
 import Mysql from '@loader/Mysql';
-import { executeReadQuery, executeWriteQuery } from '@util/mysqlUtil';
+import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class CourseRepository {
@@ -16,7 +16,7 @@ export default class CourseRepository {
   public async save(course: Course): Promise<number> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
+    return await executeQueryTransaction(connection, async () => {
       const sql =
         'INSERT INTO course (instructor_id, title, description, price, category) VALUES (?, ?, ?, ?, ?)';
       const value = Object.values(course.itemsForSave);
@@ -30,7 +30,7 @@ export default class CourseRepository {
   public async saveAll(courses: Course[]): Promise<number[]> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
+    return await executeQueryTransaction(connection, async () => {
       const sql =
         'INSERT INTO course (instructor_id, title, description, price, category) VALUES ?';
       const value = courses.map((x) => Object.values(x.itemsForSave));
@@ -49,12 +49,11 @@ export default class CourseRepository {
   public async findById(id: number): Promise<Course | void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeReadQuery(connection, async () => {
+    return await executeQuery(connection, async () => {
       const sql = 'SELECT * FROM course WHERE id = ?;';
       const value = [id];
 
       const [result] = await connection.query<CourseMysql[]>(sql, value);
-
       if (result.length === 0) return;
 
       return Course.from(result[0]);
@@ -64,11 +63,12 @@ export default class CourseRepository {
   public async findAllByTitles(titles: string[]): Promise<Course[] | void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeReadQuery(connection, async () => {
-      const sql = 'SELECT * FROM course WHERE title IN (?)';
+    return await executeQuery(connection, async () => {
+      const sql = 'SELECT * FROM course WHERE title IN (?);';
       const value = Object.values(titles);
 
       const [result] = await connection.query<CourseMysql[]>(sql, [value]);
+      if (result.length === 0) return;
 
       return result.map((x) => Course.from(x));
     });
@@ -77,9 +77,9 @@ export default class CourseRepository {
   public async update(course: Course): Promise<void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
+    return await executeQueryTransaction(connection, async () => {
       const sql =
-        'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?';
+        'UPDATE course SET title = ?, description = ?, price = ? WHERE id = ?;';
       const value = Object.values(course.itemsForUpdate);
 
       await connection.query<ResultSetHeader>(sql, value);
@@ -89,7 +89,7 @@ export default class CourseRepository {
   public async updatePublic(course: Course): Promise<void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
+    return await executeQueryTransaction(connection, async () => {
       const sql = 'UPDATE course SET is_public = true WHERE id = ?';
       const value = [course.id];
 
@@ -100,7 +100,7 @@ export default class CourseRepository {
   public async delete(course: Course): Promise<void> {
     const connection = await this.mysqlPool.getConnection();
 
-    return await executeWriteQuery(connection, async () => {
+    return await executeQueryTransaction(connection, async () => {
       const sql = 'DELETE FROM course WHERE id = ?';
       const value = [course.id];
 
