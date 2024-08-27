@@ -8,6 +8,7 @@ import CreateCourseRequest from '@dto/request/CreateCourseRequest';
 import DeleteCourseRequest from '@dto/request/DeleteCourseRequest';
 import OpenCourseRequest from '@dto/request/OpenCourseRequest';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
+import CourseAvailability from '@dto/type/CourseAvailability';
 import NotFoundError from '@error/NotFoundError';
 import RequestError from '@error/RequestError';
 import SqlError from '@error/SqlError';
@@ -150,6 +151,40 @@ export default class CourseService {
         );
       } else throw e;
     });
+  }
+
+  public async getCourseAvailability(
+    studentId: number,
+    requestCourseIds: number[],
+  ): Promise<CourseAvailability> {
+    const courseAvailability: CourseAvailability = {
+      available: [],
+      alreadyApplied: [],
+      noExist: [],
+      noPublic: [],
+    };
+
+    const courseClasses =
+      await this.courseRepository.findAllWithClassByStudentIdAndCourseIds(
+        studentId,
+        requestCourseIds,
+      );
+
+    courseClasses.forEach((x) => {
+      if (!x.studentId && x.isPublic) {
+        courseAvailability.available.push(x.courseId);
+      } else if (!x.studentId && !x.isPublic) {
+        courseAvailability.noPublic.push(x.courseId);
+      } else if (x.studentId)
+        courseAvailability.alreadyApplied.push(x.courseId);
+    });
+
+    const courseIds = courseClasses.map((x) => x.courseId);
+    requestCourseIds.forEach((x) => {
+      if (!courseIds.includes(x)) courseAvailability.noExist.push(x);
+    });
+
+    return courseAvailability;
   }
 
   private async validateInstructor(instructorId: number): Promise<void> {

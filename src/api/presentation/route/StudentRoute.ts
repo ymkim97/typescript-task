@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { singleton } from 'tsyringe';
 
 import StudentController from '@controller/StudentController';
+import ApplyClassRequest from '@dto/request/ApplyClassRequest';
 import SignUpStudentRequest from '@dto/request/SignUpStudentRequest';
 import wrapAsync from '@util/wrapAsync';
 import validateRequestBody from '../validation/validateRequestBody';
@@ -35,6 +36,14 @@ export default class StudentRoute {
       '/:id',
       wrapAsync(async (req: Request, res: Response) => {
         await this.studentController.withdrawStudent(req, res);
+      }),
+    );
+
+    this.router.post(
+      '/apply-class',
+      validateRequestBody(ApplyClassRequest),
+      wrapAsync(async (req: Request, res: Response) => {
+        await this.studentController.applyClass(req, res);
       }),
     );
   }

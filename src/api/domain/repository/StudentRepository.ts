@@ -39,6 +39,9 @@ export default class StudentRepository {
 
       return await executeQuery(connection, async () => {
         [result] = await connection.query<StudentMysql[]>(sql, value);
+        if (result.length === 0) return;
+
+        return Student.from(result[0]);
       });
     } else {
       [result] = await prevConnection.query<StudentMysql[]>(sql, value);
@@ -53,7 +56,7 @@ export default class StudentRepository {
     student: Student,
     prevConnection?: PoolConnection,
   ): Promise<void> {
-    const sql = 'DELETE FROM student WHERE id = ?';
+    const sql = 'DELETE FROM student WHERE id = ?;';
     const value = [student.id];
 
     if (!prevConnection) {

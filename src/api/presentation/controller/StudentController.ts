@@ -1,8 +1,9 @@
-import { plainToInstance } from 'class-transformer';
+import { instanceToPlain, plainToInstance } from 'class-transformer';
 import { Request, Response } from 'express';
 import { singleton } from 'tsyringe';
 
 import { STATUS_CODE } from '@constant/StatusConstant';
+import ApplyClassRequest from '@dto/request/ApplyClassRequest';
 import SignUpStudentRequest from '@dto/request/SignUpStudentRequest';
 import StudentService from '@service/StudentService';
 
@@ -30,5 +31,14 @@ export default class StudentController {
     res
       .status(STATUS_CODE.OK)
       .send(JSON.stringify({ removedStudentId: withdrawId }));
+  }
+
+  public async applyClass(req: Request, res: Response): Promise<void> {
+    const applyClassRequest = plainToInstance(ApplyClassRequest, req.body);
+
+    const applyClassResponse =
+      await this.studentService.applyClass(applyClassRequest);
+
+    res.status(STATUS_CODE.CREATED).send(instanceToPlain(applyClassResponse));
   }
 }

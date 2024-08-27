@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe';
 
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
 import Mysql from '@loader/Mysql';
-import { executeQuery } from '@util/mysqlUtil';
+import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class ClassRepository {
@@ -12,6 +12,29 @@ export default class ClassRepository {
   constructor(mysqlPool: Mysql) {
     this.mysqlPool = mysqlPool;
   }
+
+  public async saveAllByStudentIdAndCourseIds(
+    studentId: number,
+    courseIds: number[],
+  ): Promise<number[]> {
+    const connection = await this.mysqlPool.getConnection();
+
+    return await executeQueryTransaction(connection, async () => {
+      const sql = 'INSERT INTO class (student_id, course_id) VALUES ?;';
+      const value = courseIds.map((courseId) => [studentId, courseId]);
+
+      const [result] = await connection.query<ResultSetHeader>(sql, [value]);
+
+      const insertIds = Array.from(
+        { length: result.affectedRows },
+        (_, x) => result.insertId + x,
+      );
+
+      return insertIds;
+    });
+  }
+
+  public async findAllWithCoursesByStudentId() {}
 
   public async findAllWithStudentsByCourseId(
     id: number,

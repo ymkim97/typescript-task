@@ -1,8 +1,8 @@
 import { RowDataPacket } from 'mysql2';
 
 export class StudentClass {
-  private nickname: string;
-  private createDate: Date;
+  readonly nickname: string;
+  readonly createDate: Date;
 
   constructor(nickname: string, createDate: Date) {
     this.nickname = nickname;
