@@ -2,6 +2,7 @@ import { Expose } from 'class-transformer';
 import { IsInt, IsString, Length, Min } from 'class-validator';
 
 import { CourseCategory } from '@constant/CourseConstant';
+import { NumberConstant } from '@constant/NumberConstant';
 import { IsValidCourseCategory } from '@decorator/IsValidCourseCategory';
 import { Course } from '@entity/Course';
 
@@ -36,6 +37,7 @@ export default class CreateCourseRequest {
       this.description,
       this.price,
       this.category,
+      NumberConstant.COURSE_CREATE_STUDENT_COUNT,
     );
   }
 }

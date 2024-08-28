@@ -3,6 +3,7 @@ export const ERROR_MESSAGE = {
   SQL_ROLLBACK: '데이터가 Rollback 되었습니다.',
   SERVER_ERROR: '===== Server Error. =====',
   REQUEST_VALIDATION: 'Request body 값이 올바르지 못합니다.',
+  REQUEST_SEARCH_QUERY: '올바르지 못한 검색 쿼리입니다.',
 
   INSTRUCTOR_NOT_FOUND: '존재하지 않는 강사입니다.',
   INSTRUCTOR_ID_NOT_UNIFIED: '모든 요청이 같은 강사가 아닙니다.',
