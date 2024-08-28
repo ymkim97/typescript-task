@@ -2,11 +2,11 @@ import { RowDataPacket } from 'mysql2';
 
 export class StudentClass {
   readonly nickname: string;
-  readonly createDate: Date;
+  readonly appliedOn: Date;
 
-  constructor(nickname: string, createDate: Date) {
+  constructor(nickname: string, appliedOn: Date) {
     this.nickname = nickname;
-    this.createDate = createDate;
+    this.appliedOn = appliedOn;
   }
 
   public static from(studentAndClassMysql: StudentAndClassMysql): StudentClass {

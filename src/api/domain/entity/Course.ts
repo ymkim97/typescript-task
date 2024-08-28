@@ -11,6 +11,7 @@ export class Course {
   private description: string;
   private price: number;
   private category: CourseCategory;
+  private _studentCount: number;
   private createDate?: Date;
   private updateDate?: Date;
 
@@ -20,6 +21,7 @@ export class Course {
     description: string,
     price: number,
     category: CourseCategory,
+    studentCount: number,
     createDate?: Date,
     updateDate?: Date,
     id?: number,
@@ -32,6 +34,7 @@ export class Course {
     this.description = description;
     this.price = price;
     this.category = category;
+    this._studentCount = studentCount;
     this.createDate = createDate;
     this.updateDate = updateDate;
   }
@@ -82,6 +85,10 @@ export class Course {
     return this._title;
   }
 
+  public get studentCount() {
+    return this._studentCount;
+  }
+
   public set update(request: UpdateCourseRequest) {
     this._title = request.title;
     this.description = request.description;
@@ -95,6 +102,7 @@ export class Course {
       courseMysql.description,
       courseMysql.price,
       courseMysql.category,
+      courseMysql.student_count,
       courseMysql.create_date,
       courseMysql.update_date,
       courseMysql.id,
@@ -111,6 +119,7 @@ export interface CourseMysql extends RowDataPacket {
   description: string;
   price: number;
   category: CourseCategory;
+  student_count: number;
   create_date: Date;
   update_date: Date;
 }

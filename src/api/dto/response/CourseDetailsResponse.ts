@@ -43,7 +43,7 @@ export default class CourseDetailsResponse {
       courseItems.description,
       courseItems.category,
       courseItems.price,
-      studentClasses.length,
+      course.studentCount,
       studentClasses,
       courseItems.createDate,
       courseItems.updateDate,

@@ -1,4 +1,4 @@
-import { ResultSetHeader } from 'mysql2/promise';
+import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
 import { Course, CourseMysql } from '@entity/Course';
@@ -52,7 +52,7 @@ export default class CourseRepository {
 
     return await executeQuery(connection, async () => {
       const sql = 'SELECT * FROM course WHERE id = ?;';
-      const value = [id];
+      const value = id;
 
       const [result] = await connection.query<CourseMysql[]>(sql, value);
       if (result.length === 0) return;
@@ -115,6 +115,25 @@ export default class CourseRepository {
 
       await connection.query<ResultSetHeader>(sql, value);
     });
+  }
+
+  public async updateStudentCountByIds(
+    ids: number[],
+    prevConnection?: PoolConnection,
+  ): Promise<void> {
+    const sql =
+      'UPDATE course SET student_count = student_count + 1 WHERE id IN (?);';
+    const value = Object.values(ids);
+
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
+
+      return await executeQueryTransaction(connection, async () => {
+        await connection.query<ResultSetHeader>(sql, [value]);
+      });
+    } else {
+      await prevConnection.query<ResultSetHeader>(sql, [value]);
+    }
   }
 
   public async delete(course: Course): Promise<void> {

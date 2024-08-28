@@ -16,14 +16,28 @@ export default class ClassRepository {
   public async saveAllByStudentIdAndCourseIds(
     studentId: number,
     courseIds: number[],
+    prevConnection?: PoolConnection,
   ): Promise<number[]> {
-    const connection = await this.mysqlPool.getConnection();
+    const sql = 'INSERT INTO class (student_id, course_id) VALUES ?;';
+    const value = courseIds.map((courseId) => [studentId, courseId]);
 
-    return await executeQueryTransaction(connection, async () => {
-      const sql = 'INSERT INTO class (student_id, course_id) VALUES ?;';
-      const value = courseIds.map((courseId) => [studentId, courseId]);
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
 
-      const [result] = await connection.query<ResultSetHeader>(sql, [value]);
+      return await executeQueryTransaction(connection, async () => {
+        const [result] = await connection.query<ResultSetHeader>(sql, [value]);
+
+        const insertIds = Array.from(
+          { length: result.affectedRows },
+          (_, x) => result.insertId + x,
+        );
+
+        return insertIds;
+      });
+    } else {
+      const [result] = await prevConnection.query<ResultSetHeader>(sql, [
+        value,
+      ]);
 
       const insertIds = Array.from(
         { length: result.affectedRows },
@@ -31,10 +45,8 @@ export default class ClassRepository {
       );
 
       return insertIds;
-    });
+    }
   }
-
-  public async findAllWithCoursesByStudentId() {}
 
   public async findAllWithStudentsByCourseId(
     id: number,
@@ -44,7 +56,7 @@ export default class ClassRepository {
     return await executeQuery(connection, async () => {
       const sql =
         'SELECT st.nickname, cl.create_date ' +
-        'FROM student st LEFT JOIN class cl ON st.id = cl.student_id ' +
+        'FROM student st JOIN class cl ON st.id = cl.student_id ' +
         'WHERE cl.course_id = ?;';
       const value = [id];
 

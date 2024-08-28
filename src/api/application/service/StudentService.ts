@@ -10,6 +10,7 @@ import RequestError from '@error/RequestError';
 import SqlError from '@error/SqlError';
 import Mysql from '@loader/Mysql';
 import ClassRepository from '@repository/ClassRepository';
+import CourseRepository from '@repository/CourseRepository';
 import StudentRepository from '@repository/StudentRepository';
 import { executeQueryTransaction } from '@util/mysqlUtil';
 import CourseService from './CourseService';
@@ -19,17 +20,20 @@ export default class StudentService {
   private courseService: CourseService;
   private studentRepository: StudentRepository;
   private classRepository: ClassRepository;
+  private courseRepository: CourseRepository;
   private mysqlPool: Mysql;
 
   constructor(
     courseService: CourseService,
     studentRepository: StudentRepository,
     classRepository: ClassRepository,
+    courseRepository: CourseRepository,
     mysqlPool: Mysql,
   ) {
     this.courseService = courseService;
     this.studentRepository = studentRepository;
     this.classRepository = classRepository;
+    this.courseRepository = courseRepository;
     this.mysqlPool = mysqlPool;
   }
 
@@ -93,12 +97,21 @@ export default class StudentService {
       return ApplyClassResponse.from(courseAvailability, []);
     }
 
-    const createdClassIds =
-      await this.classRepository.saveAllByStudentIdAndCourseIds(
-        applyClassRequest.studentId,
+    const connection = await this.mysqlPool.getConnection();
+
+    return executeQueryTransaction(connection, async () => {
+      const createdClassIds =
+        await this.classRepository.saveAllByStudentIdAndCourseIds(
+          applyClassRequest.studentId,
+          courseAvailability.available,
+          connection,
+        );
+
+      this.courseRepository.updateStudentCountByIds(
         courseAvailability.available,
       );
 
-    return ApplyClassResponse.from(courseAvailability, createdClassIds);
+      return ApplyClassResponse.from(courseAvailability, createdClassIds);
+    });
   }
 }
