@@ -3,6 +3,7 @@ import { singleton } from 'tsyringe';
 
 import { Course, CourseMysql } from '@entity/Course';
 import { CourseClass, CourseClassMysql } from '@entity/CourseClass';
+import { CourseSearch, CourseSearchMysql } from '@entity/CourseSearch';
 import Mysql from '@loader/Mysql';
 import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
@@ -92,6 +93,81 @@ export default class CourseRepository {
 
       return result.map(Course.from);
     });
+  }
+
+  public async findAllByKeyword(
+    type: string,
+    keyword: string,
+    category: string | null,
+    startIndex: number,
+    pageSize: number,
+    sort: string,
+  ): Promise<CourseSearch[]> {
+    const connection = await this.mysqlPool.getConnection();
+    let value: object;
+    let sql: string;
+
+    if (category === 'ALL') category = null;
+
+    if (type === 'instructorAndTitle') {
+      value = [
+        category,
+        category,
+        `%${keyword}%`,
+        `%${keyword}%`,
+        false,
+        null,
+        startIndex,
+        pageSize,
+      ];
+    } else if (type === 'studentId') {
+      value = [
+        category,
+        category,
+        null,
+        null,
+        true,
+        parseInt(keyword, 10),
+        startIndex,
+        pageSize,
+      ];
+    }
+
+    if (sort === 'recent') {
+      return await executeQuery(connection, async () => {
+        sql =
+          'SELECT co.id AS course_id, co.category, co.title, ins.name AS instructor_name, co.price, co.student_count, co.create_date ' +
+          'FROM course co JOIN instructor ins ON co.instructor_id = ins.id LEFT JOIN class cl ON cl.course_id = co.id ' +
+          'WHERE (co.is_public = TRUE) AND (category = ? OR ? IS NULL) AND (co.title LIKE ? OR ins.name LIKE ? OR IF(?, cl.student_id = ?, NULL)) ' +
+          'GROUP BY co.create_date, co.title, co.instructor_id, co.price, co.category, co.student_count, co.id, co.is_public ' +
+          'ORDER BY co.create_date DESC, co.title, co.instructor_id, co.price, co.category, co.student_count, co.id, co.is_public ' +
+          'LIMIT ?, ?';
+
+        const [searchResults] = await connection.query<CourseSearchMysql[]>(
+          sql,
+          value,
+        );
+
+        return searchResults.map(CourseSearch.from);
+      });
+    } else {
+      return await executeQuery(connection, async () => {
+        sql =
+          'SELECT co.id AS course_id, co.category, co.title, ins.name AS instructor_name, co.price, co.student_count, co.create_date ' +
+          'FROM course co JOIN instructor ins ON co.instructor_id = ins.id LEFT JOIN class cl ON cl.course_id = co.id ' +
+          'WHERE (co.is_public = TRUE) AND (category = ? OR ? IS NULL) AND (co.title LIKE ? OR ins.name LIKE ? OR IF(?, cl.student_id = ?, NULL)) ' +
+          'GROUP BY co.student_count, co.create_date, co.title, co.instructor_id, co.price, co.category, co.id, co.is_public ' +
+          'ORDER BY co.student_count DESC, co.create_date, co.title, co.instructor_id, co.price, co.category, co.id, co.is_public ' +
+          'LIMIT ?, ?;';
+
+        const [searchResults] = await connection.query<CourseSearchMysql[]>(
+          sql,
+          value,
+        );
+
+        return searchResults.map(CourseSearch.from);
+      });
+    }
   }
 
   public async update(course: Course): Promise<void> {

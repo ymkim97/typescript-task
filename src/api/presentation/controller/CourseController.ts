@@ -21,9 +21,26 @@ export default class CourseController {
     this.searchService = searchService;
   }
 
-  // TODO: 강의 목록 조회
+  // /search?type=instructorAndTitle&keyword=abc&category=all&pageNumber=1&pageSize=10&sort=recent
+  // /search?type=studentId&keyword=3&category=web&pageNumber=2&pageSize=10&sort=student-count
   public async searchCourses(req: Request, res: Response): Promise<void> {
-    res.status(STATUS_CODE.OK).send('OK');
+    const type = req.query.type as string;
+    const keyword = req.query.keyword as string;
+    const category = req.query.category as string;
+    const pageNumber = parseInt(req.query.pageNumber as string, 10);
+    const pageSize = parseInt(req.query.pageSize as string, 10);
+    const sort = req.query.sort as string;
+
+    const courseListResponses = await this.searchService.searchCourseByKeyword(
+      type,
+      keyword,
+      category,
+      pageNumber,
+      pageSize,
+      sort,
+    );
+
+    res.status(STATUS_CODE.OK).send(instanceToPlain(courseListResponses));
   }
 
   public async searchCourse(req: Request, res: Response): Promise<void> {
@@ -41,9 +58,7 @@ export default class CourseController {
     const createdCourseId =
       await this.courseService.registerNew(createCourseRequest);
 
-    res
-      .status(STATUS_CODE.CREATED)
-      .send(JSON.stringify({ insertedCourseId: createdCourseId }));
+    res.status(STATUS_CODE.CREATED).json({ insertedCourseId: createdCourseId });
   }
 
   public async registerBulkCourse(req: Request, res: Response): Promise<void> {
@@ -66,9 +81,7 @@ export default class CourseController {
 
     await this.courseService.update(courseId, updateCourseRequest);
 
-    res
-      .status(STATUS_CODE.OK)
-      .send(JSON.stringify({ updatedCourseId: courseId }));
+    res.status(STATUS_CODE.OK).json({ updatedCourseId: courseId });
   }
 
   public async openCourse(req: Request, res: Response): Promise<void> {
@@ -77,9 +90,7 @@ export default class CourseController {
 
     await this.courseService.open(courseId, openCourseRequest);
 
-    res
-      .status(STATUS_CODE.OK)
-      .send(JSON.stringify({ openedCourseId: courseId }));
+    res.status(STATUS_CODE.OK).json({ openedCourseId: courseId });
   }
 
   public async deleteCourse(req: Request, res: Response): Promise<void> {
@@ -88,8 +99,6 @@ export default class CourseController {
 
     await this.courseService.delete(courseId, deleteCourseRequest);
 
-    res
-      .status(STATUS_CODE.OK)
-      .send(JSON.stringify({ deletedCourseId: courseId }));
+    res.status(STATUS_CODE.OK).json({ deletedCourseId: courseId });
   }
 }
