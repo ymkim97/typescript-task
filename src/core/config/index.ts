@@ -18,7 +18,7 @@ export default {
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     db: process.env.MYSQL_DB,
-    host: process.env.MYSQL_HOST,
+    host: process.env.IS_DOCKER || process.env.MYSQL_HOST,
     port: process.env.MYSQL_PORT,
     charset: process.env.MYSQL_CHARSET,
   },
