@@ -66,9 +66,19 @@ export default class StudentService {
       );
     }
 
+    const courseIds = await this.classRepository.findAllCourseIdsByStudentId(
+      studentId,
+      connection,
+    );
+
     return await executeQueryTransaction(connection, async () => {
       await this.classRepository.deleteAllByStudentId(studentId, connection);
       await this.studentRepository.delete(student, connection);
+      await this.courseRepository.updateStudentCountByIds(
+        courseIds,
+        true,
+        connection,
+      );
 
       return studentId;
     });
@@ -107,8 +117,10 @@ export default class StudentService {
           connection,
         );
 
-      this.courseRepository.updateStudentCountByIds(
+      await this.courseRepository.updateStudentCountByIds(
         courseAvailability.available,
+        false,
+        connection,
       );
 
       return ApplyClassResponse.from(courseAvailability, createdClassIds);

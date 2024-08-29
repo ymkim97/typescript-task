@@ -195,10 +195,18 @@ export default class CourseRepository {
 
   public async updateStudentCountByIds(
     ids: number[],
+    isDelete: boolean,
     prevConnection?: PoolConnection,
   ): Promise<void> {
-    const sql =
-      'UPDATE course SET student_count = student_count + 1 WHERE id IN (?);';
+    let sql: string;
+
+    if (isDelete) {
+      sql =
+        'UPDATE course SET student_count = student_count - 1 WHERE id IN (?);';
+    } else {
+      sql =
+        'UPDATE course SET student_count = student_count + 1 WHERE id IN (?);';
+    }
     const value = Object.values(ids);
 
     if (!prevConnection) {

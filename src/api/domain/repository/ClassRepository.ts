@@ -1,4 +1,4 @@
-import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
+import { PoolConnection, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
 import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
@@ -11,6 +11,28 @@ export default class ClassRepository {
 
   constructor(mysqlPool: Mysql) {
     this.mysqlPool = mysqlPool;
+  }
+
+  public async findAllCourseIdsByStudentId(
+    id: number,
+    prevConnection?: PoolConnection,
+  ): Promise<number[]> {
+    const sql = 'SELECT course_id FROM class WHERE student_id = ?;';
+    const value = [id];
+
+    if (!prevConnection) {
+      const connection = await this.mysqlPool.getConnection();
+
+      return await executeQuery(connection, async () => {
+        const [result] = await connection.query<RowDataPacket[]>(sql, value);
+
+        return Object.values(result.map((x) => x.course_id as number));
+      });
+    } else {
+      const [result] = await prevConnection.query<RowDataPacket[]>(sql, value);
+
+      return Object.values(result.map((x) => x.course_id as number));
+    }
   }
 
   public async saveAllByStudentIdAndCourseIds(
