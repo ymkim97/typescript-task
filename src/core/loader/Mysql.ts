@@ -33,16 +33,4 @@ export default class Mysql {
       throw e;
     }
   }
-
-  public async testConnection(): Promise<void> {
-    try {
-      const conn = await this.pool.getConnection();
-
-      conn.release();
-    } catch (e) {
-      logger.error('Database Connection Test: FAIL');
-
-      throw e;
-    }
-  }
 }
