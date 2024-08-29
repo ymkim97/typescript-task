@@ -1,16 +1,15 @@
-import express from 'express';
 import 'reflect-metadata';
 
 import config from '@config/';
-import loader from '@loader/';
+import initContainer from '@loader/container';
+import getApp from '@loader/expressApp';
 import logger from '@util/logger';
 
 async function bootstrapServer() {
   try {
-    const app = express();
-    app.use(express.json());
+    initContainer();
 
-    await loader(app);
+    const app = getApp();
 
     app.listen(config.serverPort, () => {
       logger.info(`Server Listening On Port: ${config.serverPort}`);
