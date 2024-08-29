@@ -6,11 +6,7 @@ import { executeQuery } from '@util/mysqlUtil';
 
 @singleton()
 export default class InstructorRepository {
-  private mysqlPool: Mysql;
-
-  constructor(mysqlPool: Mysql) {
-    this.mysqlPool = mysqlPool;
-  }
+  constructor(private readonly mysqlPool: Mysql) {}
 
   public async findById(id: number): Promise<Instructor | void> {
     const connection = await this.mysqlPool.getConnection();

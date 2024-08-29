@@ -7,16 +7,10 @@ import CourseRepository from '@repository/CourseRepository';
 
 @singleton()
 export default class SearchService {
-  private courseRepository: CourseRepository;
-  private classRepository: ClassRepository;
-
   constructor(
-    courseRepository: CourseRepository,
-    classRepository: ClassRepository,
-  ) {
-    this.courseRepository = courseRepository;
-    this.classRepository = classRepository;
-  }
+    private readonly courseRepository: CourseRepository,
+    private readonly classRepository: ClassRepository,
+  ) {}
 
   public async getCourseDetails(
     id: number,

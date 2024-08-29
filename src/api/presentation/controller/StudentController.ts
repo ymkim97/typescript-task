@@ -9,11 +9,7 @@ import StudentService from '@service/StudentService';
 
 @singleton()
 export default class StudentController {
-  private studentService: StudentService;
-
-  constructor(studentService: StudentService) {
-    this.studentService = studentService;
-  }
+  constructor(readonly studentService: StudentService) {}
 
   public async signUpStudent(req: Request, res: Response): Promise<void> {
     const signUpRequest = plainToInstance(SignUpStudentRequest, req.body);

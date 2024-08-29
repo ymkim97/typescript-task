@@ -4,40 +4,18 @@ import { CourseCategory } from '@constant/CourseConstant';
 import UpdateCourseRequest from '@dto/request/UpdateCourseRequest';
 
 export class Course {
-  private _id?: number;
-  private _instructorId: number;
-  private _isPublic?: boolean;
-  private _title: string;
-  private description: string;
-  private price: number;
-  private category: CourseCategory;
-  private _studentCount: number;
-  private createDate?: Date;
-  private updateDate?: Date;
-
   constructor(
-    instructorId: number,
-    title: string,
-    description: string,
-    price: number,
-    category: CourseCategory,
-    studentCount: number,
-    createDate?: Date,
-    updateDate?: Date,
-    id?: number,
-    isPublic?: boolean,
-  ) {
-    this._id = id;
-    this._instructorId = instructorId;
-    this._isPublic = isPublic;
-    this._title = title;
-    this.description = description;
-    this.price = price;
-    this.category = category;
-    this._studentCount = studentCount;
-    this.createDate = createDate;
-    this.updateDate = updateDate;
-  }
+    private _instructorId: number,
+    private _title: string,
+    private description: string,
+    private price: number,
+    private category: CourseCategory,
+    private _studentCount: number,
+    private createDate?: Date,
+    private updateDate?: Date,
+    private _id?: number,
+    private _isPublic?: boolean,
+  ) {}
 
   public get itemsForCourseDetailsResponse() {
     return {

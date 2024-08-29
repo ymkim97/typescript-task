@@ -17,16 +17,10 @@ import InstructorService from './InstructorService';
 
 @singleton()
 export default class CourseService {
-  private courseRepository: CourseRepository;
-  private instructorService: InstructorService;
-
   constructor(
-    courseRepository: CourseRepository,
-    instructorService: InstructorService,
-  ) {
-    this.courseRepository = courseRepository;
-    this.instructorService = instructorService;
-  }
+    private readonly courseRepository: CourseRepository,
+    private readonly instructorService: InstructorService,
+  ) {}
 
   public async registerNew(
     createCourseRequest: CreateCourseRequest,

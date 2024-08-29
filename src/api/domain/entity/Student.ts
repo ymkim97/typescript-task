@@ -1,15 +1,11 @@
 import { RowDataPacket } from 'mysql2';
 
 export class Student {
-  private _id?: number;
-  private email: string;
-  private nickname: string;
-
-  constructor(email: string, nickname: string, id?: number) {
-    this._id = id;
-    this.email = email;
-    this.nickname = nickname;
-  }
+  constructor(
+    private email: string,
+    private nickname: string,
+    private _id?: number,
+  ) {}
 
   public get itemsForSave() {
     return {

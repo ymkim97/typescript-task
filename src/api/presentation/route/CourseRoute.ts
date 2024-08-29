@@ -16,11 +16,9 @@ import validateRequestBody from '../validation/validateRequestBody';
 
 @singleton()
 export default class CourseRoute {
-  private courseController: CourseController;
   private router: Router;
 
-  constructor(courseController: CourseController) {
-    this.courseController = courseController;
+  constructor(private readonly courseController: CourseController) {
     this.router = Router();
 
     this.initializeRoutes();

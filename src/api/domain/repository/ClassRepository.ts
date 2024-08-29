@@ -7,11 +7,7 @@ import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class ClassRepository {
-  private mysqlPool: Mysql;
-
-  constructor(mysqlPool: Mysql) {
-    this.mysqlPool = mysqlPool;
-  }
+  constructor(private readonly mysqlPool: Mysql) {}
 
   public async findAllCourseIdsByStudentId(
     id: number,

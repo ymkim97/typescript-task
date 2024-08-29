@@ -9,11 +9,7 @@ import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
 @singleton()
 export default class CourseRepository {
-  private mysqlPool: Mysql;
-
-  constructor(mysqlPool: Mysql) {
-    this.mysqlPool = mysqlPool;
-  }
+  constructor(private readonly mysqlPool: Mysql) {}
 
   public async save(course: Course): Promise<number> {
     const connection = await this.mysqlPool.getConnection();

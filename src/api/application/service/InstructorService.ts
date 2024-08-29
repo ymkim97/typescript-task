@@ -4,11 +4,7 @@ import InstructorRepository from '@repository/InstructorRepository';
 
 @singleton()
 export default class InstructorService {
-  private instructorRepository: InstructorRepository;
-
-  constructor(instructorRepository: InstructorRepository) {
-    this.instructorRepository = instructorRepository;
-  }
+  constructor(private readonly instructorRepository: InstructorRepository) {}
 
   public async isExist(id: number): Promise<boolean> {
     const instructor = await this.instructorRepository.findById(id);

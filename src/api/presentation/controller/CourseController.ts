@@ -13,13 +13,10 @@ import SearchService from '@service/SearchService';
 
 @singleton()
 export default class CourseController {
-  private courseService: CourseService;
-  private searchService: SearchService;
-
-  constructor(courseService: CourseService, searchService: SearchService) {
-    this.courseService = courseService;
-    this.searchService = searchService;
-  }
+  constructor(
+    readonly courseService: CourseService,
+    readonly searchService: SearchService,
+  ) {}
 
   // /search?type=instructorAndTitle&keyword=abc&category=all&pageNumber=1&pageSize=10&sort=recent
   // /search?type=studentId&keyword=3&category=web&pageNumber=2&pageSize=10&sort=student-count
@@ -72,7 +69,7 @@ export default class CourseController {
 
     res
       .status(STATUS_CODE.CREATED)
-      .send(JSON.stringify({ insertedCourseIds: createdCourseIds }));
+      .json({ insertedCourseIds: createdCourseIds });
   }
 
   public async updateCourse(req: Request, res: Response): Promise<void> {

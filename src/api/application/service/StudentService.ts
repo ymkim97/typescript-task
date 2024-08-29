@@ -17,25 +17,13 @@ import CourseService from './CourseService';
 
 @singleton()
 export default class StudentService {
-  private courseService: CourseService;
-  private studentRepository: StudentRepository;
-  private classRepository: ClassRepository;
-  private courseRepository: CourseRepository;
-  private mysqlPool: Mysql;
-
   constructor(
-    courseService: CourseService,
-    studentRepository: StudentRepository,
-    classRepository: ClassRepository,
-    courseRepository: CourseRepository,
-    mysqlPool: Mysql,
-  ) {
-    this.courseService = courseService;
-    this.studentRepository = studentRepository;
-    this.classRepository = classRepository;
-    this.courseRepository = courseRepository;
-    this.mysqlPool = mysqlPool;
-  }
+    private readonly courseService: CourseService,
+    private readonly studentRepository: StudentRepository,
+    private readonly classRepository: ClassRepository,
+    private readonly courseRepository: CourseRepository,
+    private readonly mysqlPool: Mysql,
+  ) {}
 
   public async signUp(signUpRequest: SignUpStudentRequest): Promise<number> {
     const student = signUpRequest.toEntity();

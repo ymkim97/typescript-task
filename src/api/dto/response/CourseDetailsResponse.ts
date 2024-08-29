@@ -3,34 +3,16 @@ import { Course } from '@entity/Course';
 import { StudentClass } from '@entity/StudentClass';
 
 export default class CourseDetailsResponse {
-  title: string;
-  description: string;
-  category: CourseCategory;
-  price: number;
-  studentCount: number;
-  publishedOn?: Date;
-  updatedOn?: Date;
-  students: StudentClass[];
-
   constructor(
-    title: string,
-    description: string,
-    category: CourseCategory,
-    price: number,
-    studentCount: number,
-    students: StudentClass[],
-    publishedOn?: Date,
-    updatedOn?: Date,
-  ) {
-    this.title = title;
-    this.description = description;
-    this.category = category;
-    this.price = price;
-    this.studentCount = studentCount;
-    this.publishedOn = publishedOn;
-    this.updatedOn = updatedOn;
-    this.students = students;
-  }
+    readonly title: string,
+    readonly description: string,
+    readonly category: CourseCategory,
+    readonly price: number,
+    readonly studentCount: number,
+    readonly students: StudentClass[],
+    readonly publishedOn?: Date,
+    readonly updatedOn?: Date,
+  ) {}
 
   public static from(
     course: Course,
