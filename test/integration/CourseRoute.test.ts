@@ -661,7 +661,7 @@ describe('강의 목록 조회', () => {
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
-    console.log(response);
+
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
     expect(response.body).toHaveProperty('courses');
@@ -708,7 +708,7 @@ describe('강의 목록 조회', () => {
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
-    console.log(response);
+
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
     expect(response.body.courses).toHaveLength(0);
@@ -750,7 +750,7 @@ describe('강의 목록 조회', () => {
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
-    console.log(response);
+
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
     expect(response.body).toHaveProperty('courses');
