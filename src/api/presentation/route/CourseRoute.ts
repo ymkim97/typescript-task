@@ -47,10 +47,10 @@ export default class CourseRoute {
           }
         }),
       query('pageNumber')
-        .isNumeric()
+        .isInt({ min: 1 })
         .withMessage(ERROR_MESSAGE.REQUEST_SEARCH_QUERY),
       query('pageSize')
-        .isNumeric()
+        .isInt({ min: 1 })
         .withMessage(ERROR_MESSAGE.REQUEST_SEARCH_QUERY),
       query('sort').custom(async (value) => {
         if (value != 'recent' && value != 'student-count') {
@@ -65,7 +65,7 @@ export default class CourseRoute {
 
     this.router.get(
       '/:id',
-      param('id').isNumeric(),
+      param('id').isInt({ min: 1 }),
       queryValidationHandler,
       wrapAsync(async (req: Request, res: Response) => {
         await this.courseController.searchCourse(req, res);
@@ -90,7 +90,7 @@ export default class CourseRoute {
 
     this.router.put(
       '/:id',
-      param('id').isNumeric(),
+      param('id').isInt({ min: 1 }),
       queryValidationHandler,
       validateRequestBody(UpdateCourseRequest),
       wrapAsync(async (req: Request, res: Response) => {
@@ -100,7 +100,7 @@ export default class CourseRoute {
 
     this.router.put(
       '/open/:id',
-      param('id').isNumeric(),
+      param('id').isInt({ min: 1 }),
       queryValidationHandler,
       validateRequestBody(OpenCourseRequest),
       wrapAsync(async (req: Request, res: Response) => {
@@ -110,7 +110,7 @@ export default class CourseRoute {
 
     this.router.delete(
       '/:id',
-      param('id').isNumeric(),
+      param('id').isInt({ min: 1 }),
       queryValidationHandler,
       validateRequestBody(DeleteCourseRequest),
       wrapAsync(async (req: Request, res: Response) => {

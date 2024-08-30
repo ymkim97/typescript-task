@@ -22,15 +22,17 @@ describe('수강생 회원 가입', () => {
     expect(response.body).toHaveProperty('signUpId');
   });
 
-  it('수강생 회원가입 실패 - 중복된 email', async () => {
+  it('수강생 회원 가입 실패 - 중복된 email', async () => {
     // given
-    const student1 = { email: 'abc@gmail.com', nickname: 'NicknameABC' };
-    await request(app).post('/students').send(student1);
+    const student = { email: 'abc@gmail.com', nickname: 'NicknameABC' };
+    await request(app).post('/students').send(student);
 
-    const studentRequest = { email: 'abc@gmail.com', nickname: 'TestNick' };
+    const newStudentRequest = { email: 'abc@gmail.com', nickname: 'TestNick' };
 
     // when
-    const response = await request(app).post('/students').send(studentRequest);
+    const response = await request(app)
+      .post('/students')
+      .send(newStudentRequest);
 
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.BAD_REQUEST);
@@ -240,8 +242,9 @@ describe('수강 신청', () => {
 describe('수강생 회원 탈퇴', () => {
   afterEach(truncateStudent);
   afterEach(truncateCourse);
+  afterEach(truncateClass);
 
-  it('수강생 회원 탈퇴 후 기존 식별 id 반환 성공', async () => {
+  it('수강생 회원 탈퇴 성공 - 기존 식별 id 반환', async () => {
     // given
     const student = { email: 'abc@gmail.com', nickname: 'NicknameABC' };
     const studentId = (await request(app).post('/students').send(student)).body
@@ -256,7 +259,7 @@ describe('수강생 회원 탈퇴', () => {
     expect(response.body.removedStudentId).toEqual(studentId);
   });
 
-  it('수강생 회원 탈퇴 후 수강 내역 삭제 성공', async () => {
+  it('수강생 회원 탈퇴 성공 - 수강 내역 삭제', async () => {
     // given
     const connection = await mysql.getConnection();
 
@@ -288,7 +291,6 @@ describe('수강생 회원 탈퇴', () => {
       `SELECT * FROM class WHERE student_id = ${studentId}`,
     );
     const classFoundAfterCount = classResult.length;
-
     connection.release();
 
     // then
@@ -296,17 +298,18 @@ describe('수강생 회원 탈퇴', () => {
     expect(classFoundAfterCount).toEqual(0);
   });
 
-  it('수강생 회원 탈퇴 후 해당 email 재사용 성공', async () => {
+  it('수강생 회원 탈퇴 성공 - 해당 email 재사용', async () => {
     // given
+    const sameEmail = 'first@gmail.com';
     const studentBefore = {
-      email: 'first@gmail.com',
+      email: sameEmail,
       nickname: 'firstNickname',
     };
     const studentBeforeId = (
       await request(app).post('/students').send(studentBefore)
     ).body.signUpId;
 
-    const newStudent = { email: 'first@gmail.com', nickname: 'secondNickname' };
+    const newStudent = { email: sameEmail, nickname: 'secondNickname' };
 
     // when
     await request(app).delete(`/students/${studentBeforeId}`);
@@ -317,7 +320,7 @@ describe('수강생 회원 탈퇴', () => {
     expect(response.body).toHaveProperty('signUpId');
   });
 
-  it('존재하지 않는 수강생 id 입력 후 실패', async () => {
+  it('수강생 회원 탈퇴 실패 - 존재하지 않는 수강생 id', async () => {
     // given
     const id = 9999;
 
@@ -330,7 +333,7 @@ describe('수강생 회원 탈퇴', () => {
     expect(response.body.errorMessage).toEqual(ERROR_MESSAGE.STUDENT_NOT_FOUND);
   });
 
-  it('숫자 외의 parameter 입력 후 실패', async () => {
+  it('수강생 회원 탈퇴 실패 - 숫자 외의 parameter 입력', async () => {
     // given
     const id = 'notNumber';
 

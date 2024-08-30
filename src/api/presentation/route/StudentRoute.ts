@@ -35,7 +35,7 @@ export default class StudentRoute {
 
     this.router.delete(
       '/:id',
-      param('id').isNumeric().withMessage(ERROR_MESSAGE.REQUEST_PARAM),
+      param('id').isInt({ min: 1 }).withMessage(ERROR_MESSAGE.REQUEST_PARAM),
       queryValidationHandler,
       wrapAsync(async (req: Request, res: Response) => {
         await this.studentController.withdrawStudent(req, res);

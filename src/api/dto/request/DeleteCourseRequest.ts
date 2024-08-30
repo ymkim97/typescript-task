@@ -5,5 +5,5 @@ export default class DeleteCourseRequest {
   @Expose()
   @IsInt()
   @Min(1)
-  instructorId: number;
+  instructorId: number; // 사용자의 JWT 또는 Session 정보를 대신
 }

@@ -17,6 +17,7 @@ export const ERROR_MESSAGE = {
   COURSE_ALREADY_OPEN: '이미 오픈된 강의입니다.',
   COURSE_HAS_STUDENTS: '이미 수강생이 있는 경우 삭제할 수 없습니다. ',
   COURSE_DUPLICATE_TITLE: '중복된 강의명입니다.',
+  COURSE_DUPLICATE_TITLE_IN_REQ: '요청 내에 중복된 강의명이 있습니다.',
   COURSE_INVALID_CATEGORY: '올바르지 못한 카테고리입니다',
 
   STUDENT_NOT_FOUND: '존재하지 않는 수강생입니다.',

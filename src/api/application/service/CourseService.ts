@@ -206,6 +206,15 @@ export default class CourseService {
   }
 
   private async checkTitles(titles: string[]): Promise<void> {
+    const titleSet = new Set(titles);
+
+    if (titleSet.size != titles.length) {
+      throw new RequestError(
+        ERROR_MESSAGE.COURSE_DUPLICATE_TITLE_IN_REQ,
+        STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
     const duplicatedCourse =
       await this.courseRepository.findAllByTitles(titles);
 

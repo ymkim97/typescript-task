@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "test": "jest --runInBand --detectOpenHandles --forceExit --verbose",
     "dev": "ts-node-dev --transpile-only -r tsconfig-paths/register ./src/server.ts",
     "build": "rimraf ./dist && tsc",
     "start": "npm run build && ts-node-dev -r tsconfig-paths/register dist/src/server.js"
