@@ -41,26 +41,21 @@ export default class StudentService {
   }
 
   public async withdraw(studentId: number): Promise<number> {
+    const student = await this.studentRepository.findById(studentId);
+
+    if (!student) {
+      throw new RequestError(
+        ERROR_MESSAGE.STUDENT_NOT_FOUND,
+        STATUS_CODE.BAD_REQUEST,
+      );
+    }
+
+    const courseIds =
+      await this.classRepository.findAllCourseIdsByStudentId(studentId);
+
     const connection = await this.mysqlPool.getConnection();
 
     return await executeQueryTransaction(connection, async () => {
-      const student = await this.studentRepository.findById(
-        studentId,
-        connection,
-      );
-
-      if (!student) {
-        throw new RequestError(
-          ERROR_MESSAGE.STUDENT_NOT_FOUND,
-          STATUS_CODE.BAD_REQUEST,
-        );
-      }
-
-      const courseIds = await this.classRepository.findAllCourseIdsByStudentId(
-        studentId,
-        connection,
-      );
-
       await this.classRepository.deleteAllByStudentId(studentId, connection);
       await this.studentRepository.delete(student, connection);
 

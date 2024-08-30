@@ -22,30 +22,18 @@ export default class StudentRepository {
     });
   }
 
-  public async findById(
-    id: number,
-    prevConnection?: PoolConnection,
-  ): Promise<Student | void> {
-    const sql = 'SELECT * FROM student WHERE id = ?;';
-    const value = [id];
-    let result: StudentMysql[];
+  public async findById(id: number): Promise<Student | void> {
+    const connection = await this.mysqlPool.getConnection();
 
-    if (!prevConnection) {
-      const connection = await this.mysqlPool.getConnection();
+    return await executeQuery(connection, async () => {
+      const sql = 'SELECT * FROM student WHERE id = ?;';
+      const value = [id];
 
-      return await executeQuery(connection, async () => {
-        [result] = await connection.query<StudentMysql[]>(sql, value);
-        if (result.length === 0) return;
+      const [result] = await connection.query<StudentMysql[]>(sql, value);
+      if (result.length === 0) return;
 
-        return Student.from(result[0]);
-      });
-    } else {
-      [result] = await prevConnection.query<StudentMysql[]>(sql, value);
-    }
-
-    if (result.length === 0) return;
-
-    return Student.from(result[0]);
+      return Student.from(result[0]);
+    });
   }
 
   public async delete(

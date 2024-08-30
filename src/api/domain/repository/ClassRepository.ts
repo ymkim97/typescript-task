@@ -9,26 +9,17 @@ import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 export default class ClassRepository {
   constructor(private readonly mysqlPool: Mysql) {}
 
-  public async findAllCourseIdsByStudentId(
-    id: number,
-    prevConnection?: PoolConnection,
-  ): Promise<number[]> {
-    const sql = 'SELECT course_id FROM class WHERE student_id = ?;';
-    const value = [id];
+  public async findAllCourseIdsByStudentId(id: number): Promise<number[]> {
+    const connection = await this.mysqlPool.getConnection();
 
-    if (!prevConnection) {
-      const connection = await this.mysqlPool.getConnection();
+    return await executeQuery(connection, async () => {
+      const sql = 'SELECT course_id FROM class WHERE student_id = ?;';
+      const value = [id];
 
-      return await executeQuery(connection, async () => {
-        const [result] = await connection.query<RowDataPacket[]>(sql, value);
-
-        return Object.values(result.map((x) => x.course_id as number));
-      });
-    } else {
-      const [result] = await prevConnection.query<RowDataPacket[]>(sql, value);
+      const [result] = await connection.query<RowDataPacket[]>(sql, value);
 
       return Object.values(result.map((x) => x.course_id as number));
-    }
+    });
   }
 
   public async saveAllByStudentIdAndCourseIds(
