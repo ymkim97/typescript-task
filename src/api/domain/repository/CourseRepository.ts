@@ -19,7 +19,7 @@ export default class CourseRepository {
         'INSERT INTO course (instructor_id, title, description, price, category) VALUES (?, ?, ?, ?, ?);';
       const value = Object.values(course.itemsForSave);
 
-      const [result] = await connection.execute<ResultSetHeader>(sql, value);
+      const [result] = await connection.query<ResultSetHeader>(sql, value);
 
       return result.insertId;
     });

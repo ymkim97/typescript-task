@@ -1,3 +1,4 @@
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import { Expose } from 'class-transformer';
 import {
   ArrayMinSize,
@@ -15,7 +16,7 @@ export default class ApplyClassRequest {
 
   @Expose()
   @IsArray()
-  @ArrayMinSize(1)
+  @ArrayMinSize(1, { message: ERROR_MESSAGE.EMPTY_COURSE_APPLY })
   @ArrayUnique()
   @IsInt({ each: true })
   @Min(1, { each: true })

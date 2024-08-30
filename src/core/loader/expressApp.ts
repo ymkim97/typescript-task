@@ -26,20 +26,28 @@ export default function getApp(): Application {
     logger.error(err.stack);
 
     if (err instanceof SqlError) {
-      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send(err.message);
+      return res
+        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+        .json({ errorMessage: err.message });
     } else if (err instanceof RequestError) {
       if (err.validationMessages) {
-        return res.status(STATUS_CODE.BAD_REQUEST).send(err.validationMessages);
+        return res
+          .status(STATUS_CODE.BAD_REQUEST)
+          .json({ errorMessage: err.validationMessages });
       } else {
-        return res.status(STATUS_CODE.BAD_REQUEST).send(err.message);
+        return res
+          .status(STATUS_CODE.BAD_REQUEST)
+          .json({ errorMessage: err.message });
       }
     } else if (err instanceof NotFoundError) {
-      return res.status(STATUS_CODE.NOT_FOUND).send(err.message);
+      return res
+        .status(STATUS_CODE.NOT_FOUND)
+        .json({ errorMessage: err.message });
     }
 
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .send(ERROR_MESSAGE.SERVER_ERROR);
+      .json({ errorMessage: ERROR_MESSAGE.SERVER_ERROR });
   });
 
   return app;

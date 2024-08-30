@@ -31,6 +31,11 @@ export default class StudentController {
     const applyClassResponse =
       await this.studentService.applyClass(applyClassRequest);
 
-    res.status(STATUS_CODE.CREATED).send(instanceToPlain(applyClassResponse));
+    const statusCode =
+      applyClassResponse.createdClassIds.length > 0
+        ? STATUS_CODE.CREATED
+        : STATUS_CODE.OK;
+
+    res.status(statusCode).send(instanceToPlain(applyClassResponse));
   }
 }

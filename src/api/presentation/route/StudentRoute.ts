@@ -2,6 +2,7 @@ import { Request, Response, Router } from 'express';
 import { param } from 'express-validator';
 import { singleton } from 'tsyringe';
 
+import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import StudentController from '@controller/StudentController';
 import ApplyClassRequest from '@dto/request/ApplyClassRequest';
 import SignUpStudentRequest from '@dto/request/SignUpStudentRequest';
@@ -34,7 +35,7 @@ export default class StudentRoute {
 
     this.router.delete(
       '/:id',
-      param('id').isNumeric(),
+      param('id').isNumeric().withMessage(ERROR_MESSAGE.REQUEST_PARAM),
       queryValidationHandler,
       wrapAsync(async (req: Request, res: Response) => {
         await this.studentController.withdrawStudent(req, res);

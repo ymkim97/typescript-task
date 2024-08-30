@@ -2,6 +2,7 @@ import { PoolConnection } from 'mysql2/promise';
 
 import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import { STATUS_CODE } from '@constant/StatusConstant';
+import RequestError from '@error/RequestError';
 import SqlError from '@error/SqlError';
 
 export async function executeQuery<T>(
@@ -11,6 +12,8 @@ export async function executeQuery<T>(
   try {
     return await repositoryFunction();
   } catch (e) {
+    if (e instanceof RequestError) throw e;
+
     throw new SqlError(
       ERROR_MESSAGE.SQL_ERROR,
       STATUS_CODE.INTERNAL_SERVER_ERROR,
@@ -32,6 +35,8 @@ export async function executeQueryTransaction<T>(
 
     return result;
   } catch (e) {
+    if (e instanceof RequestError) throw e;
+
     throw new SqlError(
       ERROR_MESSAGE.SQL_ERROR,
       STATUS_CODE.INTERNAL_SERVER_ERROR,

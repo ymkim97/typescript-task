@@ -12,5 +12,7 @@ export default function queryValidationHandler(
 
   if (errors.isEmpty()) return next();
 
-  res.status(STATUS_CODE.BAD_REQUEST).json({ errors: errors.array() });
+  res
+    .status(STATUS_CODE.BAD_REQUEST)
+    .json({ paramErrorMessages: errors.array() });
 }
