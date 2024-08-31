@@ -1,5 +1,6 @@
-import { CourseCategory } from '@constant/CourseConstant';
 import { RowDataPacket } from 'mysql2';
+
+import { CourseCategory } from '@constant/CourseConstant';
 
 export class CourseSearch {
   constructor(

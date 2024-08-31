@@ -527,40 +527,30 @@ describe('강의 상세 조회', () => {
 
   it('강의 상세 조회 성공 - 공개된 강의 반환', async () => {
     // given
-    const courseId = 200;
-    const studentId = 300;
-    const title = 'JAVA ALGORITHM';
-    const description = 'THIS IS DESCRIPTION';
-    const price = 25000;
-    const category = '알고리즘';
-    const isPublic = true;
-    const email = 'fff@gmail.com';
-    const nickname = '닉네임6';
+    const info = {
+      courseId: 200,
+      studentId: 300,
+      title: 'JAVA ALGORITHM',
+      description: 'THIS IS DESCRIPTION',
+      price: 25000,
+      category: '알고리즘',
+      isPublic: true,
+      email: 'fff@gmail.com',
+      nickname: '닉네임6',
+    };
 
-    const connection = await mysql.getConnection();
-    await connection.query(
-      `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
-       VALUES (${courseId}, 1, ${isPublic}, '${title}', '${description}', '${price}', '${category}');`,
-    );
-    await connection.query(
-      `INSERT INTO student(id, email, nickname)
-       VALUES (${studentId}, '${email}', '${nickname}');`,
-    );
-    await connection.query(
-      `INSERT INTO class(student_id, course_id) VALUES (${studentId}, ${courseId});`,
-    );
-    connection.release();
+    await createCourseClassStudent(info);
 
     // when
-    const response = await request(app).get(`/courses/${courseId}`);
+    const response = await request(app).get(`/courses/${info.courseId}`);
 
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
-    expect(response.body.title).toEqual(title);
-    expect(response.body.description).toEqual(description);
-    expect(response.body.category).toEqual(category);
-    expect(response.body.price).toEqual(price);
-    expect(response.body.students[0].nickname).toEqual(nickname);
+    expect(response.body.title).toEqual(info.title);
+    expect(response.body.description).toEqual(info.description);
+    expect(response.body.category).toEqual(info.category);
+    expect(response.body.price).toEqual(info.price);
+    expect(response.body.students[0].nickname).toEqual(info.nickname);
     expect(response.body.students[0]).toHaveProperty('appliedOn');
     expect(response.body).toHaveProperty('publishedOn');
     expect(response.body).toHaveProperty('updatedOn');
@@ -568,40 +558,30 @@ describe('강의 상세 조회', () => {
 
   it('강의 상세 조회 성공 - 비공개된 강의 반환', async () => {
     // given
-    const courseId = 200;
-    const studentId = 300;
-    const title = 'JAVA ALGORITHM';
-    const description = 'THIS IS DESCRIPTION';
-    const price = 25000;
-    const category = '알고리즘';
-    const isPublic = false;
-    const email = 'fff@gmail.com';
-    const nickname = '닉네임6';
+    const info = {
+      courseId: 200,
+      studentId: 300,
+      title: 'JAVA ALGORITHM',
+      description: 'THIS IS DESCRIPTION',
+      price: 25000,
+      category: '알고리즘',
+      isPublic: false,
+      email: 'fff@gmail.com',
+      nickname: '닉네임6',
+    };
 
-    const connection = await mysql.getConnection();
-    await connection.query(
-      `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
-       VALUES (${courseId}, 1, ${isPublic}, '${title}', '${description}', '${price}', '${category}');`,
-    );
-    await connection.query(
-      `INSERT INTO student(id, email, nickname)
-       VALUES (${studentId}, '${email}', '${nickname}');`,
-    );
-    await connection.query(
-      `INSERT INTO class(student_id, course_id) VALUES (${studentId}, ${courseId});`,
-    );
-    connection.release();
+    await createCourseClassStudent(info);
 
     // when
-    const response = await request(app).get(`/courses/${courseId}`);
+    const response = await request(app).get(`/courses/${info.courseId}`);
 
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
-    expect(response.body.title).toEqual(title);
-    expect(response.body.description).toEqual(description);
-    expect(response.body.category).toEqual(category);
-    expect(response.body.price).toEqual(price);
-    expect(response.body.students[0].nickname).toEqual(nickname);
+    expect(response.body.title).toEqual(info.title);
+    expect(response.body.description).toEqual(info.description);
+    expect(response.body.category).toEqual(info.category);
+    expect(response.body.price).toEqual(info.price);
+    expect(response.body.students[0].nickname).toEqual(info.nickname);
     expect(response.body.students[0]).toHaveProperty('appliedOn');
     expect(response.body).toHaveProperty('publishedOn');
     expect(response.body).toHaveProperty('updatedOn');
@@ -627,15 +607,20 @@ describe('강의 목록 조회', () => {
 
   it('강의 목록 조회(강사명, 강의명 검색) 성공 - 공개된 강의 반환', async () => {
     // given
-    const courseId = 200;
-    const studentId = 300;
-    const title = 'JAVA ALGORITHM';
-    const description = 'THIS IS DESCRIPTION';
-    const price = 25000;
-    const category = '알고리즘';
-    const isPublic = true;
-    const email = 'fff@gmail.com';
-    const nickname = '닉네임6';
+    const info = {
+      courseId: 200,
+      studentId: 300,
+      title: 'JAVA ALGORITHM',
+      description: 'THIS IS DESCRIPTION',
+      price: 25000,
+      category: '알고리즘',
+      isPublic: true,
+      email: 'fff@gmail.com',
+      nickname: '닉네임6',
+    };
+
+    await createCourseClassStudent(info);
+
     const queries = {
       type: 'instructorAndTitle',
       keyword: 'JAVA ALGORITHM',
@@ -644,20 +629,6 @@ describe('강의 목록 조회', () => {
       pageSize: 10,
       sort: 'recent',
     };
-
-    const connection = await mysql.getConnection();
-    await connection.query(
-      `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
-       VALUES (${courseId}, 1, ${isPublic}, '${title}', '${description}', '${price}', '${category}');`,
-    );
-    await connection.query(
-      `INSERT INTO student(id, email, nickname)
-       VALUES (${studentId}, '${email}', '${nickname}');`,
-    );
-    await connection.query(
-      `INSERT INTO class(student_id, course_id) VALUES (${studentId}, ${courseId});`,
-    );
-    connection.release();
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
@@ -665,24 +636,29 @@ describe('강의 목록 조회', () => {
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
     expect(response.body).toHaveProperty('courses');
-    expect(response.body.courses[0].id).toEqual(courseId);
-    expect(response.body.courses[0].category).toEqual(category);
-    expect(response.body.courses[0].title).toEqual(title);
+    expect(response.body.courses[0].id).toEqual(info.courseId);
+    expect(response.body.courses[0].category).toEqual(info.category);
+    expect(response.body.courses[0].title).toEqual(info.title);
     expect(response.body.courses[0].instructorName).toEqual('향로');
-    expect(response.body.courses[0].price).toEqual(price);
+    expect(response.body.courses[0].price).toEqual(info.price);
   });
 
   it('강의 목록 조회(강사명, 강의명 검색) 성공 - 비공개된 강의는 반환하지 않음', async () => {
     // given
-    const courseId = 200;
-    const studentId = 300;
-    const title = 'JAVA ALGORITHM';
-    const description = 'THIS IS DESCRIPTION';
-    const price = 25000;
-    const category = '알고리즘';
-    const isPublic = false;
-    const email = 'fff@gmail.com';
-    const nickname = '닉네임6';
+    const info = {
+      courseId: 200,
+      studentId: 300,
+      title: 'JAVA ALGORITHM',
+      description: 'THIS IS DESCRIPTION',
+      price: 25000,
+      category: '알고리즘',
+      isPublic: false,
+      email: 'fff@gmail.com',
+      nickname: '닉네임6',
+    };
+
+    await createCourseClassStudent(info);
+
     const queries = {
       type: 'instructorAndTitle',
       keyword: 'JAVA ALGORITHM',
@@ -691,20 +667,6 @@ describe('강의 목록 조회', () => {
       pageSize: 10,
       sort: 'recent',
     };
-
-    const connection = await mysql.getConnection();
-    await connection.query(
-      `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
-       VALUES (${courseId}, 1, ${isPublic}, '${title}', '${description}', '${price}', '${category}');`,
-    );
-    await connection.query(
-      `INSERT INTO student(id, email, nickname)
-       VALUES (${studentId}, '${email}', '${nickname}');`,
-    );
-    await connection.query(
-      `INSERT INTO class(student_id, course_id) VALUES (${studentId}, ${courseId});`,
-    );
-    connection.release();
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
@@ -716,37 +678,28 @@ describe('강의 목록 조회', () => {
 
   it('강의 목록 조회(수강생 식별자 검색) 성공 - 공개된 강의 반환', async () => {
     // given
-    const courseId = 200;
-    const studentId = 300;
-    const title = 'JAVA ALGORITHM';
-    const description = 'THIS IS DESCRIPTION';
-    const price = 25000;
-    const category = '알고리즘';
-    const isPublic = true;
-    const email = 'fff@gmail.com';
-    const nickname = '닉네임6';
+    const info = {
+      courseId: 200,
+      studentId: 300,
+      title: 'JAVA ALGORITHM',
+      description: 'THIS IS DESCRIPTION',
+      price: 25000,
+      category: '알고리즘',
+      isPublic: true,
+      email: 'fff@gmail.com',
+      nickname: '닉네임6',
+    };
+
+    await createCourseClassStudent(info);
+
     const queries = {
       type: 'studentId',
-      keyword: `${studentId}`,
+      keyword: `${info.studentId}`,
       category: 'all',
       pageNumber: 1,
       pageSize: 10,
       sort: 'recent',
     };
-
-    const connection = await mysql.getConnection();
-    await connection.query(
-      `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
-       VALUES (${courseId}, 1, ${isPublic}, '${title}', '${description}', '${price}', '${category}');`,
-    );
-    await connection.query(
-      `INSERT INTO student(id, email, nickname)
-       VALUES (${studentId}, '${email}', '${nickname}');`,
-    );
-    await connection.query(
-      `INSERT INTO class(student_id, course_id) VALUES (${studentId}, ${courseId});`,
-    );
-    connection.release();
 
     // when
     const response = await request(app).get('/courses/search').query(queries);
@@ -754,10 +707,26 @@ describe('강의 목록 조회', () => {
     // then
     expect(response.statusCode).toEqual(STATUS_CODE.OK);
     expect(response.body).toHaveProperty('courses');
-    expect(response.body.courses[0].id).toEqual(courseId);
-    expect(response.body.courses[0].category).toEqual(category);
-    expect(response.body.courses[0].title).toEqual(title);
+    expect(response.body.courses[0].id).toEqual(info.courseId);
+    expect(response.body.courses[0].category).toEqual(info.category);
+    expect(response.body.courses[0].title).toEqual(info.title);
     expect(response.body.courses[0].instructorName).toEqual('향로');
-    expect(response.body.courses[0].price).toEqual(price);
+    expect(response.body.courses[0].price).toEqual(info.price);
   });
 });
+
+async function createCourseClassStudent(info) {
+  const connection = await mysql.getConnection();
+  await connection.query(
+    `INSERT INTO course(id, instructor_id, is_public, title, description, price, category)
+       VALUES (${info.courseId}, 1, ${info.isPublic}, '${info.title}', '${info.description}', '${info.price}', '${info.category}');`,
+  );
+  await connection.query(
+    `INSERT INTO student(id, email, nickname)
+       VALUES (${info.studentId}, '${info.email}', '${info.nickname}');`,
+  );
+  await connection.query(
+    `INSERT INTO class(student_id, course_id) VALUES (${info.studentId}, ${info.courseId});`,
+  );
+  connection.release();
+}

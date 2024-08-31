@@ -1,6 +1,6 @@
 import { CourseCategory } from '@constant/CourseConstant';
-import { Course } from '@entity/Course';
-import { StudentClass } from '@entity/StudentClass';
+import { Course } from '@dto/entity/Course';
+import { StudentClass } from '@entity/search/StudentClass';
 
 export default class CourseDetailsResponse {
   constructor(

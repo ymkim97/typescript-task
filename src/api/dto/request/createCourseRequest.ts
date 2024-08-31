@@ -4,7 +4,7 @@ import { IsInt, IsString, Length, Min } from 'class-validator';
 import { CourseCategory } from '@constant/CourseConstant';
 import { NumberConstant } from '@constant/NumberConstant';
 import { IsValidCourseCategory } from '@decorator/IsValidCourseCategory';
-import { Course } from '@entity/Course';
+import { Course } from '@dto/entity/Course';
 
 export default class CreateCourseRequest {
   @Expose()

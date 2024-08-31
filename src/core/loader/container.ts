@@ -6,7 +6,7 @@ import logger from '@util/logger';
 import Mysql from './Mysql';
 
 export default async function initContainer() {
-  const mysqlPool = container.resolve(Mysql);
+  container.resolve(Mysql);
   logger.info('Create Mysql Connection Pool: OK');
 
   container.registerSingleton(CourseController);

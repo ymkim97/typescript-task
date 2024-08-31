@@ -1,9 +1,12 @@
 import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
-import { Course, CourseMysql } from '@entity/Course';
-import { CourseClass, CourseClassMysql } from '@entity/CourseClass';
-import { CourseSearch, CourseSearchMysql } from '@entity/CourseSearch';
+import { Course, CourseMysql } from '@dto/entity/Course';
+import { CourseClass, CourseClassMysql } from '@dto/entity/search/CourseClass';
+import {
+  CourseSearch,
+  CourseSearchMysql,
+} from '@dto/entity/search/CourseSearch';
 import Mysql from '@loader/Mysql';
 import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 

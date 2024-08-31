@@ -1,4 +1,4 @@
-import { CourseSearch } from '@entity/CourseSearch';
+import { CourseSearch } from '@dto/entity/search/CourseSearch';
 
 export class CourseListResponse {
   constructor(readonly courses: CourseSearch[]) {}

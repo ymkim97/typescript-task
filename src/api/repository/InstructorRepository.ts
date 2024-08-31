@@ -1,6 +1,6 @@
 import { singleton } from 'tsyringe';
 
-import { Instructor, InstructorMysql } from '@entity/Instructor';
+import { Instructor, InstructorMysql } from '@dto/entity/Instructor';
 import Mysql from '@loader/Mysql';
 import { executeQuery } from '@util/mysqlUtil';
 

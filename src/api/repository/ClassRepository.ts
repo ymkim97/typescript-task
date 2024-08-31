@@ -1,7 +1,10 @@
 import { PoolConnection, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
-import { StudentAndClassMysql, StudentClass } from '@entity/StudentClass';
+import {
+  StudentAndClassMysql,
+  StudentClass,
+} from '@entity/search/StudentClass';
 import Mysql from '@loader/Mysql';
 import { executeQuery, executeQueryTransaction } from '@util/mysqlUtil';
 
