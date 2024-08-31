@@ -8,11 +8,11 @@ export default class UpdateCourseRequest {
   instructorId: number; // 사용자의 JWT 또는 Session 정보를 대신
 
   @Expose()
-  @Length(0, 50)
+  @Length(1, 50)
   title: string;
 
   @Expose()
-  @Length(0, 65535)
+  @Length(1, 65535)
   description: string;
 
   @Expose()

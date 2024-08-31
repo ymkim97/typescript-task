@@ -13,7 +13,7 @@ export default class CreateCourseRequest {
   instructorId: number;
 
   @Expose()
-  @Length(0, 50)
+  @Length(1, 50)
   title: string;
 
   @Expose()
