@@ -33,7 +33,7 @@ export default class CourseService {
     return await this.courseRepository.save(course).catch((e: SqlError) => {
       const mysqlError = e.originalError as any;
 
-      if (mysqlError.errno === DUPLICATE_ENTRY) {
+      if (mysqlError && mysqlError.errno === DUPLICATE_ENTRY) {
         throw new RequestError(
           ERROR_MESSAGE.COURSE_DUPLICATE_TITLE,
           STATUS_CODE.BAD_REQUEST,
@@ -138,7 +138,7 @@ export default class CourseService {
     await this.courseRepository.delete(course).catch((e: SqlError) => {
       const mysqlError = e.originalError as any;
 
-      if (mysqlError.errno === FOREIGN_KEY_CONSTRAINT) {
+      if (mysqlError && mysqlError.errno === FOREIGN_KEY_CONSTRAINT) {
         throw new RequestError(
           ERROR_MESSAGE.COURSE_HAS_STUDENTS,
           STATUS_CODE.BAD_REQUEST,

@@ -4,7 +4,7 @@ export class CourseClass {
   constructor(
     readonly courseId: number,
     readonly isPublic: boolean,
-    readonly studentId: number,
+    readonly studentId?: number,
   ) {}
 
   public static from(courseClassMysql: CourseClassMysql): CourseClass {
