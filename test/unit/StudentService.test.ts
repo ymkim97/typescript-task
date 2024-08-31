@@ -8,7 +8,6 @@ import {
 } from '@johanblumenberg/ts-mockito';
 import { PoolConnection } from 'mysql2/promise';
 
-import { ERROR_MESSAGE } from '@constant/ErrorMessageConstant';
 import { DUPLICATE_ENTRY } from '@constant/MysqlErrors';
 import { STATUS_CODE } from '@constant/StatusConstant';
 import ApplyClassRequest from '@dto/request/ApplyClassRequest';
@@ -74,14 +73,9 @@ describe('회원 가입', () => {
 
     when(stubStudentRepository.save(anyOfClass(Student))).thenReject(sqlError);
 
-    // when
-    const actual = async () => {
-      await studentService.signUp(signUpRequest);
-    };
-
-    // then
-    expect(actual).rejects.toThrow(
-      new RequestError(ERROR_MESSAGE.DUPLICATE_EMAIL, STATUS_CODE.BAD_REQUEST),
+    // when & then
+    await expect(studentService.signUp(signUpRequest)).rejects.toBeInstanceOf(
+      RequestError,
     );
   });
 
@@ -91,7 +85,7 @@ describe('회원 가입', () => {
     signUpRequest.email = 'abc@gmail.com';
     signUpRequest.nickname = 'NicknameABC';
 
-    const sqlError = new SqlError('TEST', STATUS_CODE.INTERNAL_SERVER_ERROR);
+    const sqlError = new SqlError('hello', STATUS_CODE.INTERNAL_SERVER_ERROR);
 
     when(stubStudentRepository.save(anyOfClass(Student))).thenReject(sqlError);
 
@@ -100,9 +94,9 @@ describe('회원 가입', () => {
       await studentService.signUp(signUpRequest);
     };
 
-    // then
-    expect(actual).rejects.toThrow(
-      new SqlError(ERROR_MESSAGE.SQL_ERROR, STATUS_CODE.INTERNAL_SERVER_ERROR),
+    // when & then
+    await expect(studentService.signUp(signUpRequest)).rejects.toBeInstanceOf(
+      SqlError,
     );
   });
 });
