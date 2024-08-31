@@ -1,6 +1,7 @@
 import { PoolConnection, ResultSetHeader } from 'mysql2/promise';
 import { singleton } from 'tsyringe';
 
+import { CATEGORY_VALUES } from '@constant/CourseConstant';
 import { Course, CourseMysql } from '@dto/entity/Course';
 import { CourseClass, CourseClassMysql } from '@dto/entity/search/CourseClass';
 import {
@@ -107,6 +108,7 @@ export default class CourseRepository {
     let sql: string;
 
     if (category === 'ALL') category = null;
+    else category = CATEGORY_VALUES[category as keyof typeof CATEGORY_VALUES];
 
     if (type === 'instructorAndTitle') {
       value = [
