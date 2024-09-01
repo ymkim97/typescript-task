@@ -121,7 +121,7 @@ Presentation layer를 통해 요청을 받아 입력값을 검증 후 Applicatio
   > 또한 여기에 페이징 기능까지 있어 검색 성능을 개선하는 방법을 생각해보았고, 검색 시 인덱스를 적용해보고자 했습니다. <br>
   > 먼저 No offset을 생각해보았습니다. 하지만 이는 무한 스크롤에 적합하고, 순차적으로 다음페이지 이동만 가능하여 일반적인 페이징 버튼은 사용하지 못한다는 점이 있었습니다. <br>
   > 프로젝트의 서비스를 생각 했을때, 이는 적합하지 않다고 생각하였습니다. <br>
-  > 따라서 기존 페이징 기능을 유지하면서 검색 성능을 개선하기 위해 커버링 인덱스를 적용하고자 했습니다. 즉 select, where, order by, group by 등 사용되는 모든 칼럼이 index 칼럼에 포함되도록 했습니다. <br>
+  > 기존 페이징 기능을 유지하면서 검색 성능을 개선하기 위해 커버링 인덱스를 적용하고자 했습니다. 즉 select, where, order by, group by 등 사용되는 모든 칼럼이 index 칼럼에 포함되도록 했습니다. <br>
 
 - _강의 목록 조회 - Covering Index, using temporary, using filesort 해결_
 
@@ -136,6 +136,14 @@ Presentation layer를 통해 요청을 받아 입력값을 검증 후 Applicatio
   > 그러나 최신순이나 수강생수와 반대로 인덱스는 오름차순으로 정렬되어 backward index scan이 발생하는 것을 확인했습니다. <br>
   > 하지만 InnoDB에서는 페이지 잠금이 forward index에 적합한 구조이고, Double linked list로 연결된 B-Tree의 리프 페이지 구조와는 달리 페이지 내에서 인덱스 레코드가 단방향으로만 연결되어 backward index scan이 forward index scan에 비해 느릴 수 밖에 없습니다. <br>
   > Forward Index scan을 유도하기 위해서 각각 맨 앞의 인덱스를 Descending Index로 구성했습니다. <br> > `INDEX idx_covering_course_create_order (create_date DESC, title, instructor_id, price, category, student_count, is_public),` <br> > `INDEX idx_covering_course_student_count_order (student_count DESC, create_date, title, instructor_id, price, category, is_public)`
+
+- _테스트 코드 작성_
+
+  > 테스트 코드를 작성함으로써 입력값들을 검증하고, 예기치 못한 작동을 미리 방지할 수 있어 이는 필수라고 생각합니다. <br>
+  > 특히 저에게는 이를 포함하여, 다음 두가지가 테스트 코드를 작성하게 되는 원동력이 됩니다. <br>
+  > 첫번째는 리팩토링을 보다 더 안전하고 확실하게 가능하도록 한다는 것입니다. 테스트 코드는 구현 과정이 아닌 결과를 검증하는 것이기 때문에, 코드를 리팩토링 해도 결과가 달라지지 않는 이상 항상 통과해야만 합니다. 따라서 리팩토링 후 기존 테스트 코드가 통과하면 잘 이루어졌다는 것을 바로 알 수 있습니다. <br>
+  > 두번째는 코드를 새로 보는 사람들의 가이드가 될 수 있다는 것입니다. 원래의 코드만 보아서는 어떤 형식의 데이터가 들어가고 반환이 되야하는지 한눈에 보기 어렵지만, 테스트 코드에서는 예시를 통해(given, then) 명확하게 어떤 데이터가 들어가고 반환되는지 명시하기 때문에 많은 도움이 된다고 생각합니다. <br>
+  > 그 결과 이번 과제에서 서버의 전체적인 동작을 확인할 수 있는 통합 테스트와, 비즈니스 로직만 빠르게 검증할 수 있는 단위 테스트를 최대한 작성했습니다.
 
 ###
 
